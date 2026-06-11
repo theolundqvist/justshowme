@@ -4,11 +4,30 @@
 
 `claude-viz` is a [Claude Code](https://claude.com/claude-code) skill (it works in any agent harness that reads a `SKILL.md`) that makes your agent *draw* a concept rather than describe it: a schematic when you ask how something fits together, an animated flow for a pipeline, a toggle-gated diagram for "what does this flag actually change", a keyboard-navigable slide deck for a design walkthrough. Self-contained HTML, opens in your browser, zero build step.
 
+![A toggle-gated flow: flip the checkboxes and watch which paths reach the API](docs/screenshots/toggle-gated.png)
+
+<sub>Toggle `authenticated` / `adminMode` and the edges gate live — you *see* the access logic instead of reading it.</sub>
+
 ## Why
 
 Markdown is great until the explanation gets real. Past ~100 lines it's a wall you skim and forget. As [Anthropic's own engineers have argued](https://claude.com/blog/using-claude-code-the-unreasonable-effectiveness-of-html), HTML conveys far more — tables, SVG, color, interaction, spatial layout — and keeps you *in the loop* with what the agent is doing. If you're a visual learner, a diagram lands a system in two seconds that three paragraphs never will.
 
 The catch: most "AI visuals" are just colored cards and styled text in a box — still reading, not seeing. `claude-viz` is opinionated that **a card or a table is not a visual.** A visual is a shape you understand by looking: boxes and arrows with real spatial meaning, dots moving through a pipeline, a slider that moves a curve. The skill puts the effort into the *information design* — what to show, in what form, and what to cut — and starts every drawing from a proven primitive so it comes out clean.
+
+## Looks like this
+
+Every image below is generated HTML — no hand-drawing, no design tool. Open [`references/primitives.html`](skills/visualize/references/primitives.html) in a browser to play with the live versions.
+
+| | |
+|---|---|
+| **Schematic** — boxes, arrows, spatial mental model | **Animated flow** — dots travel the pipeline |
+| ![schematic](docs/screenshots/schematic.png) | ![animated flow](docs/screenshots/animated-flow.png) |
+| **Themed Mermaid** — standard graph types | **Sketch** — hand-drawn (rough.js) for an informal feel |
+| ![mermaid](docs/screenshots/mermaid.png) | ![sketch](docs/screenshots/sketch.png) |
+
+And the default output is a gazable slide deck — one diagram per slide, ≤3 lines of text:
+
+![a slide from a deck](docs/screenshots/slide-deck.png)
 
 ## What's in the box
 
