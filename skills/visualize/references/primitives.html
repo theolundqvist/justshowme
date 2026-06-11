@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>visualize — visual primitives (copy &amp; adapt)</title>
+<!--
+  SOURCE OF TRUTH for the `visualize` skill. Page mode builds right inside this shell.
+  Each section is a WORKING primitive — copy the closest one and swap in real data.
+  Rule: the drawing carries the meaning; text is labels + one caption. Never a paragraph in a panel.
+  A card/table is NOT a visual. Reach for a diagram, a flow, an interactive, or a sketch.
+  Self-contained except Mermaid + rough.js (CDN; note offline caveat).
+-->
+<style>
+  :root{
+    --bg:#0d1117;--panel:#141b24;--line:#2a313c;--ink:#e6edf3;--mut:#9aa7b4;--dim:#6b7785;
+    --acc:#e06b3b;--acc2:#f0a868;--good:#3fb950;--bad:#e5534b;--blue:#4493f8;--purp:#a371f7;
+    --mono:'SF Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:980px;margin:0 auto;padding:46px 24px 100px}
+  h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
+  .sub{color:var(--mut);margin:0 0 8px}
+  .demo{margin-top:40px;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .cap{display:flex;align-items:baseline;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line)}
+  .cap h2{font-size:16px;margin:0}
+  .cap .when{margin-left:auto;font:600 11px/1 var(--mono);color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+  .stage{padding:26px;display:flex;justify-content:center;align-items:center;min-height:280px}
+  svg{max-width:100%;height:auto;overflow:visible}
+  /* SVG text helpers */
+  .t{fill:var(--ink);font-family:-apple-system,Inter,sans-serif}
+  .tm{fill:var(--mut)} .td{fill:var(--dim)} .ta{fill:var(--acc2)} .tg{fill:var(--good)}
+  .lbl{font:600 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+  /* interactive controls */
+  .ctrl{display:flex;align-items:center;gap:18px;justify-content:center;padding:0 26px 24px;flex-wrap:wrap}
+  .ctrl label{font:600 12px/1 var(--mono);color:var(--mut);letter-spacing:.06em;text-transform:uppercase}
+  input[type=range]{width:280px;accent-color:var(--acc)}
+  .read{font:700 15px/1 var(--mono);color:var(--acc2)}
+  .chk{display:flex;gap:9px;align-items:center;text-transform:none;letter-spacing:0;color:var(--ink);font-family:var(--mono);font-size:13px;
+    background:#10151c;border:1px solid var(--line);padding:9px 14px;border-radius:9px;cursor:pointer}
+  .chk input{accent-color:var(--acc);width:15px;height:15px;cursor:pointer}
+  /* supporting text (secondary — never the main event) */
+  .caption{padding:0 22px 18px;color:var(--dim);font-size:13px;text-align:center}
+  .callout{margin:0 22px 20px;display:flex;gap:12px;padding:12px 16px;border-radius:10px;
+    background:linear-gradient(90deg,rgba(63,185,80,.12),transparent);border-left:3px solid var(--good)}
+  .callout b{color:var(--ink)} .callout p{margin:0;color:var(--mut);font-size:14px}
+  /* mermaid host — force the rendered SVG to fill the panel instead of shrinking to content */
+  .mermaid{width:100%;display:flex;justify-content:center}
+  .mermaid svg{width:100%!important;max-width:860px;height:auto!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Visual primitives</h1>
+  <p class="sub">Copy the closest block, swap in real data. The drawing is the content; text is labels.</p>
+
+  <!-- ========================================================= -->
+  <!-- 1 · SCHEMATIC SVG DIAGRAM — boxes, arrows, spatial layout  -->
+  <!-- Use for: architecture, mental models, how-it-fits-together -->
+  <!-- ========================================================= -->
+  <div class="demo">
+    <div class="cap"><h2>Schematic diagram</h2><span class="when">SVG · no deps</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 720 320" width="720">
+        <defs>
+          <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+            <path d="M0,0 L9,4.5 L0,9 Z" fill="#6b7785"/>
+          </marker>
+        </defs>
+        <!-- shared node -->
+        <g transform="translate(290,210)">
+          <rect width="140" height="78" rx="12" fill="#10151c" stroke="var(--acc)" stroke-width="1.5"/>
+          <text x="70" y="32" text-anchor="middle" class="lbl ta">.git</text>
+          <text x="70" y="54" text-anchor="middle" class="tm" font-size="13">one shared store</text>
+        </g>
+        <!-- three folder nodes -->
+        <g transform="translate(40,46)">
+          <rect width="150" height="92" rx="10" fill="#161f2b" stroke="var(--line)"/>
+          <text x="75" y="42" text-anchor="middle" class="t" font-size="14" font-weight="600">main</text>
+          <text x="75" y="64" text-anchor="middle" class="td" font-size="11" font-family="var(--mono)">worktree ①</text>
+        </g>
+        <g transform="translate(288,46)">
+          <rect width="150" height="92" rx="10" fill="#161f2b" stroke="var(--line)"/>
+          <text x="75" y="42" text-anchor="middle" class="t" font-size="14" font-weight="600">fix-auth</text>
+          <text x="75" y="64" text-anchor="middle" class="td" font-size="11" font-family="var(--mono)">worktree ②</text>
+        </g>
+        <g transform="translate(536,46)">
+          <rect width="150" height="92" rx="10" fill="#161f2b" stroke="var(--line)"/>
+          <text x="75" y="42" text-anchor="middle" class="t" font-size="14" font-weight="600">release</text>
+          <text x="75" y="64" text-anchor="middle" class="td" font-size="11" font-family="var(--mono)">worktree ③</text>
+        </g>
+        <path d="M115,138 C115,185 305,175 332,206" fill="none" stroke="#6b7785" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <path d="M363,138 L363,204" fill="none" stroke="#6b7785" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <path d="M611,138 C611,185 421,175 390,206" fill="none" stroke="#6b7785" stroke-width="1.5" marker-end="url(#arrow)"/>
+      </svg>
+    </div>
+    <div class="caption">3 working dirs · 1 shared history (git worktrees)</div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 2 · ANIMATED FLOW — dots travel paths (animateMotion)      -->
+  <!-- Use for: pipelines, "where things go", state machines      -->
+  <!-- ========================================================= -->
+  <div class="demo">
+    <div class="cap"><h2>Animated flow</h2><span class="when">SVG animateMotion · no deps</span></div>
+    <div class="stage">
+      <svg viewBox="0 0 760 260" width="760">
+        <rect x="20" y="98" width="110" height="60" rx="10" fill="#161f2b" stroke="var(--line)"/>
+        <text x="75" y="132" text-anchor="middle" class="t" font-size="13" font-weight="600">request</text>
+        <rect x="300" y="92" width="150" height="76" rx="12" fill="#10151c" stroke="var(--blue)" stroke-width="1.5"/>
+        <text x="375" y="120" text-anchor="middle" class="t" font-size="13" font-weight="600">cache</text>
+        <text x="375" y="139" text-anchor="middle" class="tm" font-size="12">in memory</text>
+        <text x="375" y="158" text-anchor="middle" class="tg" font-size="12" font-weight="700">~90% hit</text>
+        <rect x="470" y="192" width="100" height="48" rx="9" fill="#1a1410" stroke="#5a4326"/>
+        <text x="520" y="220" text-anchor="middle" class="ta" font-size="12" font-weight="600">DB query</text>
+        <rect x="610" y="192" width="130" height="48" rx="10" fill="#161f2b" stroke="var(--acc)"/>
+        <text x="675" y="220" text-anchor="middle" class="ta" font-size="13" font-weight="600">cache filled</text>
+        <path id="f1" d="M130,128 L300,128" fill="none" stroke="#2a313c" stroke-width="2"/>
+        <path id="f2" d="M450,140 C470,140 470,216 470,216" fill="none" stroke="#3a2f22" stroke-width="2" stroke-dasharray="4 4"/>
+        <path id="f3" d="M570,216 L610,216" fill="none" stroke="#3a2f22" stroke-width="2"/>
+        <circle r="5" fill="var(--blue)"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0s"><mpath href="#f1"/></animateMotion></circle>
+        <circle r="5" fill="var(--blue)"><animateMotion dur="2.2s" repeatCount="indefinite" begin="0.7s"><mpath href="#f1"/></animateMotion></circle>
+        <circle r="5" fill="var(--blue)"><animateMotion dur="2.2s" repeatCount="indefinite" begin="1.4s"><mpath href="#f1"/></animateMotion></circle>
+        <circle r="4.5" fill="var(--acc2)"><animateMotion dur="1.4s" repeatCount="indefinite" begin="2.6s"><mpath href="#f2"/></animateMotion></circle>
+        <circle r="4.5" fill="var(--acc2)"><animateMotion dur="0.9s" repeatCount="indefinite" begin="4s"><mpath href="#f3"/></animateMotion></circle>
+      </svg>
+    </div>
+    <div class="caption">miss only: query DB → fill cache</div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 3 · INTERACTIVE — a control drives a live SVG              -->
+  <!-- Use for: relationships, tradeoff curves, "what if X"       -->
+  <!-- ========================================================= -->
+  <div class="demo">
+    <div class="cap"><h2>Interactive widget</h2><span class="when">range → SVG · no deps</span></div>
+    <div class="stage" style="min-height:220px">
+      <svg viewBox="0 0 620 200" width="620">
+        <line x1="60" y1="170" x2="600" y2="170" stroke="var(--line)"/>
+        <rect id="barNo" x="160" y="168" width="120" height="2" fill="var(--bad)"/>
+        <rect id="barYes" x="360" y="168" width="120" height="2" fill="var(--good)"/>
+        <text x="220" y="190" text-anchor="middle" class="tm" font-size="12">no cache</text>
+        <text x="420" y="190" text-anchor="middle" class="tm" font-size="12">with cache</text>
+        <text id="lblNo" x="220" y="160" text-anchor="middle" class="t" font-size="15" font-weight="700">—</text>
+        <text id="lblYes" x="420" y="160" text-anchor="middle" class="t" font-size="15" font-weight="700">—</text>
+      </svg>
+    </div>
+    <div class="ctrl">
+      <label for="turns">turns</label>
+      <input id="turns" type="range" min="1" max="50" value="12">
+      <span class="read" id="turnsRead">—</span>
+    </div>
+    <div class="caption">LLM prompt-cache cost vs conversation length</div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 3b · TOGGLE-GATED FLOW — checkboxes open/close paths       -->
+  <!-- Use for: flags/inputs that change WHICH paths are live.    -->
+  <!-- Highest-value interactive: flip a flag, see the edge gate. -->
+  <!-- Adapt by editing the `rows` config in JS below.            -->
+  <!-- ========================================================= -->
+  <div class="demo">
+    <div class="cap"><h2>Toggle-gated flow</h2><span class="when">checkbox → paths gate · no deps</span></div>
+    <div class="ctrl" style="padding-top:22px">
+      <label class="chk"><input type="checkbox" id="g_auth" checked> authenticated</label>
+      <label class="chk"><input type="checkbox" id="g_admin" checked> adminMode</label>
+    </div>
+    <div class="stage" style="min-height:300px">
+      <svg id="gateflow" viewBox="0 0 900 300" width="900">
+        <defs><marker id="gfar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="var(--good)"/></marker></defs>
+        <rect x="330" y="40" width="64" height="210" rx="10" fill="#10151c" stroke="var(--line)"/>
+        <text x="362" y="30" text-anchor="middle" class="td" font-size="12" font-family="var(--mono)">auth gate</text>
+        <text x="362" y="268" text-anchor="middle" class="td" font-size="10" font-family="var(--mono)">authenticated</text>
+        <rect x="520" y="40" width="64" height="210" rx="10" fill="#10151c" stroke="var(--line)"/>
+        <text x="552" y="30" text-anchor="middle" class="td" font-size="12" font-family="var(--mono)">role gate</text>
+        <text x="552" y="268" text-anchor="middle" class="td" font-size="10" font-family="var(--mono)">adminMode</text>
+        <rect x="700" y="108" width="170" height="84" rx="12" fill="#161f2b" stroke="var(--acc)" stroke-width="1.5"/>
+        <text x="785" y="155" text-anchor="middle" class="t" font-size="15" font-weight="600">API</text>
+        <g id="gfrows"></g>
+      </svg>
+    </div>
+    <div class="caption" id="gfcap"></div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 4 · SKETCH — hand-drawn (rough.js, CDN)                    -->
+  <!-- Use for: informal walkthrough / whiteboard feel           -->
+  <!-- ========================================================= -->
+  <div class="demo">
+    <div class="cap"><h2>Sketch (hand-drawn)</h2><span class="when">rough.js · CDN</span></div>
+    <div class="stage"><svg id="sketch" viewBox="0 0 620 200" width="620"></svg></div>
+    <div class="caption">whiteboard look — friendlier than a clean diagram</div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- 5 · MERMAID — standard graph types, themed (CDN)          -->
+  <!-- Use for: flowchart / sequence / state / ER when standard  -->
+  <!-- ========================================================= -->
+  <div class="demo">
+    <div class="cap"><h2>Mermaid (themed)</h2><span class="when">flowchart/sequence/state · CDN</span></div>
+    <div class="stage">
+      <pre class="mermaid">
+flowchart LR
+  A([request]) --> B{cache hit?}
+  B -- yes --> C[serve cached]
+  B -- no --> D[compute] --> E[(store)] --> C
+</pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- rough.js (sketch) -->
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<!-- mermaid -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({startOnLoad:true,theme:'base',
+    flowchart:{useMaxWidth:false},sequence:{useMaxWidth:false},state:{useMaxWidth:false},er:{useMaxWidth:false},
+    themeVariables:{
+    background:'#141b24',primaryColor:'#161f2b',primaryBorderColor:'#2a313c',primaryTextColor:'#e6edf3',
+    lineColor:'#6b7785',secondaryColor:'#10151c',tertiaryColor:'#1a1410',fontSize:'18px',
+    fontFamily:'SF Mono,ui-monospace,Menlo,monospace'}});
+</script>
+<script>
+  // interactive: re-sent context grows each turn → cost ~ n²/2; cache bills prior turns at 10%
+  (function(){
+    var s=document.getElementById('turns'),r=document.getElementById('turnsRead');
+    var bN=document.getElementById('barNo'),bY=document.getElementById('barYes');
+    var lN=document.getElementById('lblNo'),lY=document.getElementById('lblYes');
+    var maxH=140,base=170,ref=50*50/2;
+    function draw(){
+      var n=+s.value, no=n*n/2, yes=n*0.5+0.1*(n*n/2-n*0.5);
+      var hN=Math.max(2,no/ref*maxH), hY=Math.max(2,yes/ref*maxH);
+      bN.setAttribute('y',base-hN); bN.setAttribute('height',hN);
+      bY.setAttribute('y',base-hY); bY.setAttribute('height',hY);
+      lN.setAttribute('y',base-hN-8); lN.textContent=Math.round(no);
+      lY.setAttribute('y',base-hY-8); lY.textContent=Math.round(yes);
+      r.textContent=n+' turns → '+(no/yes).toFixed(1)+'× cheaper';
+    }
+    s.addEventListener('input',draw); draw();
+  })();
+  // toggle-gated flow: each row passes a gate only if its predicate holds. edit `rows` to adapt.
+  (function(){
+    var NS='http://www.w3.org/2000/svg',ON='#3fb950',DIM='#2a313c',X='#e5534b';
+    var auth=document.getElementById('g_auth'),admin=document.getElementById('g_admin');
+    var host=document.getElementById('gfrows'),cap=document.getElementById('gfcap');
+    var rows=[
+      {name:'public',col:'#4493f8',gate1:function(){return true;},        gate2:function(){return true;}},
+      {name:'user',  col:'#e06b3b',gate1:function(){return auth.checked;},gate2:function(){return true;}},
+      {name:'admin', col:'#9aa7b4',gate1:function(){return auth.checked;},gate2:function(){return admin.checked;}}
+    ];
+    function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+    function mark(x,y){var g=el('g',{});g.appendChild(el('line',{x1:x-6,y1:y-6,x2:x+6,y2:y+6,stroke:X,'stroke-width':2.5}));g.appendChild(el('line',{x1:x+6,y1:y-6,x2:x-6,y2:y+6,stroke:X,'stroke-width':2.5}));return g;}
+    function build(){
+      host.textContent='';
+      var ys=[70,150,230],sy=[132,150,168];
+      rows.forEach(function(r,i){
+        var y=ys[i],p1=r.gate1(),p2=p1&&r.gate2();
+        host.appendChild(el('rect',{x:20,y:y-23,width:150,height:46,rx:10,fill:'#161f2b',stroke:r.col}));
+        var tx=el('text',{x:95,y:y+5,'text-anchor':'middle','font-size':13,'font-weight':600,fill:r.col,'font-family':'SF Mono,Menlo,monospace'});tx.textContent=r.name;host.appendChild(tx);
+        host.appendChild(el('line',{x1:170,y1:y,x2:330,y2:y,stroke:ON,'stroke-width':2.5}));
+        host.appendChild(el('line',{x1:394,y1:y,x2:520,y2:y,stroke:p1?ON:DIM,'stroke-width':2.5}));
+        host.appendChild(el('path',{d:'M584,'+y+' C642,'+y+' 650,'+sy[i]+' 700,'+sy[i],fill:'none',stroke:p2?ON:DIM,'stroke-width':2.5,'marker-end':p2?'url(#gfar)':'none'}));
+        if(!p1)host.appendChild(mark(362,y)); else if(!p2)host.appendChild(mark(552,y));
+      });
+      var live=rows.filter(function(r){return r.gate1()&&r.gate2();}).map(function(r){return r.name;});
+      cap.textContent='reaching API: '+(live.join(', ')||'none');
+    }
+    auth.addEventListener('change',build);admin.addEventListener('change',build);build();
+  })();
+  // sketch: hand-drawn boxes + arrow
+  window.addEventListener('load',function(){
+    if(!window.rough)return;
+    var svg=document.getElementById('sketch'), rc=rough.svg(svg);
+    var o={stroke:'#e6edf3',roughness:1.4,bowing:1.5};
+    svg.appendChild(rc.rectangle(40,70,150,64,Object.assign({},o,{stroke:'#f0a868'})));
+    svg.appendChild(rc.rectangle(420,70,160,64,Object.assign({},o,{stroke:'#3fb950'})));
+    svg.appendChild(rc.line(190,102,420,102,Object.assign({},o,{stroke:'#6b7785'})));
+    function label(x,y,txt,fill){var t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor','middle');
+      t.setAttribute('font-family','SF Mono,Menlo,monospace');t.setAttribute('font-size','13');t.setAttribute('fill',fill);
+      t.textContent=txt;svg.appendChild(t);}
+    label(115,107,'idea','#f0a868'); label(500,107,'shipped','#3fb950'); label(305,92,'one prompt','#9aa7b4');
+  });
+</script>
+</body>
+</html>
