@@ -19,7 +19,7 @@ Instead of a 600-line markdown plan, your agent hands you an interactive diagram
 
 ## 2 · Your PR descriptions become a story of slides
 
-When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. The reviewer sees the architecture and the fix before reading the diff. Shot headless, uploaded inline with [`gh-img`](https://github.com/theolundqvist/gh-img). One diagram per slide, a few words, no paragraphs.
+When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. Shot headless, uploaded inline with [`gh-img`](https://github.com/theolundqvist/gh-img). One diagram per slide, a few words, no paragraphs.
 
 ## The primitives
 
