@@ -13,9 +13,9 @@
 
 Instead of arguing over a 600-line markdown plan, your agent hands you an **interactive** diagram. Hover it, toggle it, drag it — and the problem *and* the solution land in seconds. Then you say "no, do it this way," and it re-renders.
 
-[![Interactive undo-send demo: hovering pauses the countdown and pushes the server deadline out](docs/screenshots/interactive-demo.png)](https://theolundqvist.github.io/justshowme/examples/undo-send.html)
+[![Interactive countdown demo: hovering holds the countdown and pushes the deadline out](docs/screenshots/interactive-demo.png)](https://theolundqvist.github.io/justshowme/examples/takeoff.html)
 
-**▶ [Try the live demo →](https://theolundqvist.github.io/justshowme/examples/undo-send.html)** &nbsp; Hover the pill, watch the server deadline move, hit Undo. *This is generated HTML — not a video, not a mockup.* You grasp an entire "undo send" timing model by feeling it for five seconds.
+**▶ [Try the live demo →](https://theolundqvist.github.io/justshowme/examples/takeoff.html)** &nbsp; A 4-slide deck. Hover the pill, watch the deadline move, hit Abort. *This is generated HTML — not a video, not a mockup.* You grasp an entire timing model by feeling it for five seconds.
 
 ## 2 · Your PR descriptions become a story of slides
 
@@ -55,9 +55,15 @@ gh extension install theolundqvist/gh-img
 6. Tell the user: from now on you'll explain plans and bug diagnoses as visual decks and open PRs that carry the diagrams.
 </details>
 
-## Under the hood
+## The primitives
 
-The agent composes everything from a kit of six proven, self-contained primitives — schematic SVG, animated flow, slider-interactive, toggle-gated flow, hand-drawn sketch, themed Mermaid — so output stays clean. Open [`references/primitives.html`](skills/visualize/references/primitives.html) to play with them. Slides are the default; a scrolling **page** (`--page`) is for dense reference. Command: `/visualize`.
+The agent composes every visual from a kit of six proven, self-contained primitives — no decoration, no drift. Open [`references/primitives.html`](skills/visualize/references/primitives.html) to play with them. Slides are the default; a scrolling **page** (`--page`) is for dense reference. Command: `/visualize`.
+
+| Schematic SVG | Animated flow | Interactive |
+|---|---|---|
+| ![boxes and arrows, the real shape of the system](docs/screenshots/schematic.png) | ![dots moving along the request path](docs/screenshots/animated-flow.png) | ![a countdown you hover to hold](docs/screenshots/interactive-demo.png) |
+| **Toggle-gated flow** | **Hand-drawn sketch** | **Themed Mermaid** |
+| ![a checkbox that opens and closes a path](docs/screenshots/toggle-gated.png) | ![rough.js whiteboard-style sketch](docs/screenshots/sketch.png) | ![a state diagram in the house theme](docs/screenshots/mermaid.png) |
 
 ## Credits & license
 
