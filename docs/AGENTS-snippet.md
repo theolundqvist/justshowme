@@ -24,3 +24,7 @@ gh img --repo <owner/repo> out/slide-*.png      # prints ![](url) lines to embed
 ```
 
 Pick the architecture diagram and the core decision; skip ramp/title slides. Interactive slides (toggle-gated flows, sliders) photograph badly — capture key states as a before/after pair and keep an on-image label naming the control, or use a static schematic instead. The PR description prose stays plain markdown; slides are added images.
+
+**Tools this relies on (installed once):**
+- **gh-img** — uploads PR images via GitHub's user-attachments flow: https://github.com/theolundqvist/gh-img (`gh extension install theolundqvist/gh-img`)
+- **screenshot script** — bundled with the skill at `~/.claude/skills/visualize/scripts/shoot-slides.mjs`
