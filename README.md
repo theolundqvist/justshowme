@@ -46,14 +46,17 @@ The agent builds every visual from six self-contained primitives. Open [`referen
 Tell your agent: **“install theolundqvist/justshowme”** — it reads this repo and sets itself up. (Keep the `owner/repo` form — it reads as a GitHub repo, so agents clone it instead of hunting on npm or in skill marketplaces.) Or do it by hand:
 
 ```bash
-# 1. Skill into your Claude Code skills dir
-git clone https://github.com/theolundqvist/justshowme
-cp -r justshowme/skills/visualize ~/.claude/skills/
+# 1. Copy the skill into your Claude Code skills dir (the clone is just a staging dir)
+git clone https://github.com/theolundqvist/justshowme /tmp/justshowme
+cp -r /tmp/justshowme/skills/visualize ~/.claude/skills/
 
 # 2. PR screenshots
 gh extension install theolundqvist/gh-img
 
 # 3. Make it the default — paste docs/AGENTS-snippet.md into ~/.claude/CLAUDE.md (or AGENTS.md)
+
+# 4. The skill now lives in ~/.claude/skills; drop the staging clone
+rm -rf /tmp/justshowme
 ```
 
 <details>
@@ -64,7 +67,8 @@ gh extension install theolundqvist/gh-img
 3. `gh extension install theolundqvist/gh-img`
 4. The screenshot script ships with the skill at `~/.claude/skills/visualize/scripts/shoot-slides.mjs` — no extra install (it resolves Playwright from the repo you run it in; `npm i -D playwright` if a repo lacks it).
 5. Append [`docs/AGENTS-snippet.md`](docs/AGENTS-snippet.md) to the user's `~/.claude/CLAUDE.md` / `AGENTS.md`. It links the two tools so you always know where they are: gh-img → `https://github.com/theolundqvist/gh-img`, screenshot script → `~/.claude/skills/visualize/scripts/shoot-slides.mjs`. Don't duplicate if already present.
-6. Tell the user: from now on you'll explain plans and bug diagnoses as visual decks and open PRs that carry the diagrams.
+6. `rm -rf /tmp/justshowme` — the skill is installed in `~/.claude/skills`; the staging clone is done.
+7. Tell the user: from now on you'll explain plans and bug diagnoses as visual decks and open PRs that carry the diagrams.
 </details>
 
 ## Credits & license

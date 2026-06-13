@@ -143,15 +143,18 @@
     <section id="install">
       <h2>Install</h2>
       <p class="lead">The whole point: tell your agent <strong>“install theolundqvist/justshowme”</strong> and it sets itself up. Or do it by hand:</p>
-      <pre># 1. Skill into your Claude Code skills dir
-git clone https://github.com/theolundqvist/justshowme
-cp -r justshowme/skills/visualize ~/.claude/skills/
+      <pre># 1. Copy the skill into your skills dir (the clone is just staging)
+git clone https://github.com/theolundqvist/justshowme /tmp/justshowme
+cp -r /tmp/justshowme/skills/visualize ~/.claude/skills/
 
 # 2. PR screenshots (optional)
 gh extension install theolundqvist/gh-img
 
 # 3. Make it the default — paste docs/AGENTS-snippet.md
-#    into your ~/.claude/CLAUDE.md (or AGENTS.md)</pre>
+#    into your ~/.claude/CLAUDE.md (or AGENTS.md)
+
+# 4. Drop the staging clone
+rm -rf /tmp/justshowme
       <p class="muted">Works in any agent harness that reads a <code>SKILL.md</code>. Self-contained HTML output — no build step.</p>
     </section>
   </div>
