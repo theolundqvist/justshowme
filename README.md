@@ -39,6 +39,8 @@ The agent builds every visual from six self-contained primitives. Open [`referen
 | **Hand-drawn sketch** | **Themed Mermaid** |
 | ![rough.js whiteboard-style sketch](docs/screenshots/sketch.png) | ![a state diagram in the house theme](docs/screenshots/mermaid.png) |
 
+The one rule behind all of it: **never ship a slide whose markup you haven't looked at as a picture.** The agent renders each slide to a PNG, reads it back, fixes overlaps and clipped labels and floating arrows, and re-renders until it passes a gazable checklist. For a big or unfamiliar deck that loop runs as a multi-agent workflow — [`skills/visualize/workflows/design-slides.workflow.js`](skills/visualize/workflows/design-slides.workflow.js) (Ground → Shape → Design → Assemble: research each slide from code, argue the composition, then one designer per slide iterates against its own render).
+
 ---
 
 ## Install

@@ -27,14 +27,14 @@ Do not open a template yet.
    - a standard graph (flowchart, sequence, ER, class, gantt) → **Mermaid**, themed to the house palette
    - **a claim that's just true** → a one-line caption. NOT a panel, NOT a card. If a beat can't become one of the drawings above, it isn't a beat — it's a caption or it's cut.
 4. **Engine, per concept:** Mermaid for standard graph types (fast, reliable); hand-authored SVG when the layout is custom/spatial; animation when motion *adds meaning* (not decoration); interactive when a parameter or relationship is the point; sketch for an informal feel. Mix freely within one page.
-5. **Cull (minimalism, applied to pixels).** Every mark on the canvas must trace to the takeaway. No decorative SVG, no filler labels, no diagram that exists because the slot looked empty. If deleting an element doesn't hurt the takeaway, delete it. A *wrong or disjoint* diagram is worse than prose — precision first.
+5. **Cull (minimalism, applied to pixels).** Every mark on the canvas must trace to the takeaway. No decorative SVG, no filler labels, no diagram that exists because the slot looked empty. If deleting an element doesn't hurt the takeaway, delete it. A *wrong or disjoint* diagram is worse than prose — precision first. Note the **traps** too: the misconceptions the diagram must *not* show (a confident wrong diagram is worse than none). Phase 3's render check rejects a slide that draws one.
 6. **Skim-test the plan.** For each beat: name the drawing in a few words ("git worktrees → boxes-and-arrows of repo+3 dirs"). If you can't name the drawing, the beat isn't ready. Show the user the beat→drawing list in one line each for anything substantial, then generate.
 
 ## Phase 2 — DRAW (start from a working primitive, never freehand)
 
 - **Copy from `references/primitives.html`.** It holds correct, proven snippets for all primitives (diagram kit, animated flow, slider-interactive, toggle-gated flow, sketch, Mermaid) plus the minimal supporting text elements, on the house-style shell. Start from the closest one and adapt its data — do **not** hand-write SVG from a blank file (that's where corruption and misalignment come from).
 - **Container:** page mode → build right inside `references/primitives.html` (it's both the scrolling house-style shell and the snippet library). Slides → `templates/slides.html`. **Reuse the template's nav `<script>` as-is** — don't hand-roll a compact version. It tracks the current slide from the IntersectionObserver (which toggles each slide's `visible` class as it enters/leaves the viewport). A hand-rolled handler that re-derives the index from scratch is how arrow-key nav ends up stuck on slide 2.
-- **House style.** Dark canvas, single warm accent (`--acc #e06b3b`), mono labels. Keep it consistent run-to-run.
+- **House style.** Dark canvas, mono labels, consistent run-to-run. Color carries role, not decoration: single warm accent (`--acc #e06b3b` / `--acc2 #f0a868`) = the primary subject + primary edges; teal `#3a8f82` or blue `#4493f8` = secondary systems; purple `#a371f7` = external services; slate/muted = stores. **Prefix `<marker>` arrowhead ids per slide** (`s3arr`, not `arr`) so slides in one deck don't collide on a shared id.
 - **Text budget:** a title, ≤4 short labels, one caption line. If you're writing a sentence inside the drawing, cut it.
 - **Self-contained.** Inline CSS/JS. CDN allowed only for Mermaid and rough.js (note the offline caveat); everything else inline. SVG diagrams and `animateMotion` need no dependency at all.
 
@@ -49,15 +49,29 @@ Slides fail by carrying prose. Enforce:
 - **Open on the core fast.** Lead with the architecture / the decision — at most one short title slide of ramp-up. Don't spend slides on context, motivation, or agenda.
 - **One beat per slide**, composition varied slide-to-slide.
 
-## Phase 3 — SHIP & VERIFY
+## Phase 3 — VERIFY AGAINST THE RENDERED IMAGE (never ship markup you haven't seen as a picture)
+
+The deck fails in exactly the places where someone wrote SVG and trusted it: markup that *reads* fine overlaps, clips, and floats once rendered. So the last phase looks at pixels, and it loops.
 
 ```bash
-mkdir -p /tmp/visualize
-# write to /tmp/visualize/<slug>.html   (slug = short kebab of the topic)
-open /tmp/visualize/<slug>.html        # macOS; use xdg-open on Linux
+mkdir -p /tmp/visualize          # write the deck to /tmp/visualize/<slug>.html (slug = short kebab)
+node <skill-dir>/scripts/shoot-slides.mjs /tmp/visualize/<slug>.html /tmp/visualize/<slug>-shots
 ```
 
-**Open it and confirm it actually rendered** — a diagram that 404s its CDN, an SVG that collapsed, or a slider wired to nothing is a broken visual. Then give the user the one-takeaway + the beat→drawing list in two or three chat lines, and the file path. The HTML is ephemeral scratch; ask before keeping or moving one.
+1. **`Read` the rendered PNGs** — judge the picture, not the markup.
+2. **Run the gazable checklist** per slide; a slide is done only when its PNG passes every box:
+   - [ ] zero overlapping shapes
+   - [ ] nothing clipped at the viewBox edges
+   - [ ] every arrow visibly touches the two boxes it connects
+   - [ ] every label sits inside or beside its element and is legible
+   - [ ] the drawing shows what you intended — and none of the traps (the misconceptions it must not show)
+   - [ ] house style consistent across slides; the one beat is graspable in ~2s
+3. **Fix what fails, re-render, re-read — repeat.** A first render almost never passes; budget at least a couple of rounds on anything with real layout.
+4. A 404'd CDN, a collapsed SVG, or a slider wired to nothing is a broken visual — catch it here.
+
+Then `open` it (`xdg-open` on Linux) and give the user the one-takeaway + beat→drawing list in two or three chat lines, and the file path. The HTML is ephemeral scratch; ask before keeping or moving one.
+
+**Scale-up:** for a large or unfamiliar deck, run this same loop as a multi-agent workflow — [`workflows/design-slides.workflow.js`](workflows/design-slides.workflow.js) (Ground → Shape → Design → Assemble: research each slide from code in parallel, argue the composition with 3 lenses + a synth, then one designer per slide iterates against its own PNG). The phases above are the single-agent version of that discipline. (Needs a harness with a multi-agent workflow runner.)
 
 ## Attaching slides to a GitHub PR
 
