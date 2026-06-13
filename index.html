@@ -49,8 +49,10 @@
   .btn.ghost{border:1px solid var(--line);color:var(--ink)}
   .btn:hover{text-decoration:none;filter:brightness(1.08)}
   .oneliner{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;color:var(--mut);
-    background:#10151c;border:1px solid var(--line);border-radius:10px;padding:11px 16px;margin:0 auto}
-  .oneliner b{color:var(--acc2)}
+    background:#10151c;border:1px solid var(--line);border-radius:10px;padding:11px 16px;margin:0 auto;
+    max-width:100%;flex-wrap:wrap;justify-content:center;text-align:center}
+  .oneliner b{color:var(--acc2);overflow-wrap:anywhere}
+  @media(max-width:520px){.oneliner{font-size:12px;padding:10px 12px;gap:6px}}
   figure{margin:36px 0}
   img{max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
   figcaption{color:var(--dim);font-size:14px;text-align:center;margin-top:10px}
@@ -93,13 +95,13 @@
       <h1>Stop reading walls of text.<br><span class="hl">Just show me.</span></h1>
       <p class="sub">A Claude Code skill that makes your AI agent <em>draw</em> the answer — diagrams, animated flows, slide decks — instead of dumping markdown.</p>
       <div class="cta">
-        <a class="btn primary" href="examples/takeoff.html">▶ Try the live demo</a>
+        <a class="btn primary" href="examples/event-loop.html">▶ Open the live demo</a>
         <a class="btn ghost" href="https://github.com/theolundqvist/justshowme">View on GitHub</a>
       </div>
-      <div class="oneliner">Tell your agent:&nbsp; <b>“install justshowme from github.com/theolundqvist/justshowme”</b></div>
+      <div class="oneliner">Tell your agent:&nbsp; <b>“install theolundqvist/justshowme”</b></div>
       <figure>
-        <a href="examples/takeoff.html"><img src="docs/screenshots/interactive-demo.png" alt="An interactive countdown demo: hovering holds the countdown and pushes the deadline out"></a>
-        <figcaption>Generated HTML you can actually poke — hover the pill and the deadline moves. <a href="examples/takeoff.html">Try it live →</a></figcaption>
+        <a href="examples/event-loop.html"><img src="docs/screenshots/bug-diagnosis.png" alt="A slide diagnosing a 32-second API freeze: a 32.4-second gap where the event loop scheduled no work"></a>
+        <figcaption>A real bug, diagnosed and fixed across four slides. <a href="examples/event-loop.html">Arrow through it live →</a></figcaption>
       </figure>
     </div>
   </div>
@@ -107,8 +109,12 @@
   <div class="wrap">
     <section id="how" style="border-top:none">
       <h2>1 · Iterate on plans with visuals you can <em>poke</em></h2>
-      <p class="lead">Instead of arguing over a 600-line markdown plan, your agent hands you an <strong>interactive</strong> diagram — hover it, toggle it, drag it. The problem and the solution land in seconds, and you say “no, do it this way” and it re-renders. The demo above is a real example: a 4-slide deck where you grasp an entire timing model by feeling it for five seconds.</p>
-      <p style="margin-top:14px"><a class="btn primary" href="examples/takeoff.html">▶ Try the live demo</a></p>
+      <p class="lead">Sometimes a diagram isn't enough — you need to <strong>feel</strong> it. Your agent hands you an interactive widget: hover it, toggle it, drag it, and the problem and the solution land in seconds. Then you say “no, do it this way” and it re-renders. Here's a real one — an “undo send” grace window you grasp by feeling it for five seconds.</p>
+      <figure>
+        <a href="examples/takeoff.html"><img src="docs/screenshots/interactive-demo.png" alt="An interactive countdown demo: hovering holds the countdown and pushes the deadline out"></a>
+        <figcaption>Generated HTML you can actually poke — hover the pill and the deadline moves.</figcaption>
+      </figure>
+      <p style="margin-top:14px"><a class="btn primary" href="examples/takeoff.html">▶ Try the interactive demo</a></p>
     </section>
 
     <section id="primitives">
@@ -136,7 +142,7 @@
 
     <section id="install">
       <h2>Install</h2>
-      <p class="lead">The whole point: tell your agent <strong>“install justshowme from github.com/theolundqvist/justshowme”</strong> and it sets itself up. Or do it by hand:</p>
+      <p class="lead">The whole point: tell your agent <strong>“install theolundqvist/justshowme”</strong> and it sets itself up. Or do it by hand:</p>
       <pre># 1. Skill into your Claude Code skills dir
 git clone https://github.com/theolundqvist/justshowme
 cp -r justshowme/skills/visualize ~/.claude/skills/

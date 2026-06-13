@@ -43,7 +43,7 @@ The agent builds every visual from six self-contained primitives. Open [`referen
 
 ## Install
 
-Tell your agent: **“install justshowme from github.com/theolundqvist/justshowme”** — it reads this repo and sets itself up. (Include the URL — without it, agents go looking on npm and in skill marketplaces first.) Or do it by hand:
+Tell your agent: **“install theolundqvist/justshowme”** — it reads this repo and sets itself up. (Keep the `owner/repo` form — it reads as a GitHub repo, so agents clone it instead of hunting on npm or in skill marketplaces.) Or do it by hand:
 
 ```bash
 # 1. Skill into your Claude Code skills dir
@@ -57,7 +57,7 @@ gh extension install theolundqvist/gh-img
 ```
 
 <details>
-<summary><b>Exactly what an agent should do for “install justshowme”</b></summary>
+<summary><b>Exactly what an agent should do for “install theolundqvist/justshowme”</b></summary>
 
 1. `git clone https://github.com/theolundqvist/justshowme /tmp/justshowme`
 2. `mkdir -p ~/.claude/skills && cp -r /tmp/justshowme/skills/visualize ~/.claude/skills/` (other harnesses: place `skills/visualize/SKILL.md` where they load skills).
