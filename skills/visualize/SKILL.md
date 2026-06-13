@@ -33,7 +33,7 @@ Do not open a template yet.
 ## Phase 2 — DRAW (start from a working primitive, never freehand)
 
 - **Copy from `references/primitives.html`.** It holds correct, proven snippets for all primitives (diagram kit, animated flow, slider-interactive, toggle-gated flow, sketch, Mermaid) plus the minimal supporting text elements, on the house-style shell. Start from the closest one and adapt its data — do **not** hand-write SVG from a blank file (that's where corruption and misalignment come from).
-- **Container:** page mode → build right inside `references/primitives.html` (it's both the scrolling house-style shell and the snippet library). Slides → `templates/slides.html`.
+- **Container:** page mode → build right inside `references/primitives.html` (it's both the scrolling house-style shell and the snippet library). Slides → `templates/slides.html`. **Keep the template's nav `<script>` verbatim** — don't hand-roll a compact version. It tracks the current slide from the IntersectionObserver; deriving it instead from `.classList.contains('visible')` is broken, because `visible` is add-only (it drives the fade-in and is never removed), so arrow-key nav sticks on slide 2 and can't go further down.
 - **House style.** Dark canvas, single warm accent (`--acc #e06b3b`), mono labels. Keep it consistent run-to-run.
 - **Text budget:** a title, ≤4 short labels, one caption line. If you're writing a sentence inside the drawing, cut it.
 - **Self-contained.** Inline CSS/JS. CDN allowed only for Mermaid and rough.js (note the offline caveat); everything else inline. SVG diagrams and `animateMotion` need no dependency at all.
