@@ -21,14 +21,18 @@ Instead of a 600-line markdown plan, your agent hands you an interactive diagram
 
 When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. Shot headless, uploaded inline with [`gh-img`](https://github.com/theolundqvist/gh-img). One diagram per slide, a few words, no paragraphs.
 
+Here's a real one — a 32-second API freeze, diagnosed and fixed across four slides. **▶ [Open the live slide story →](https://theolundqvist.github.io/justshowme/examples/event-loop.html)**
+
+| The bug, measured | The fix, measured |
+|---|---|
+| [![a slide showing a 32.4-second gap where the event loop scheduled no work](docs/screenshots/bug-diagnosis.png)](https://theolundqvist.github.io/justshowme/examples/event-loop.html) | [![a before/after slide showing 56 seconds dropping to 54 milliseconds](docs/screenshots/slide-deck.png)](https://theolundqvist.github.io/justshowme/examples/event-loop.html) |
+
 ## The primitives
 
 The agent builds every visual from six self-contained primitives. Open [`references/primitives.html`](skills/visualize/references/primitives.html) to play with them. Slides are the default; `--page` gives a scrolling page for dense reference. Command: `/visualize`.
 
-| The plan | The root cause |
-|---|---|
-| ![a plan slide: one diagram, a few words](docs/screenshots/slide-deck.png) | ![a bug root-cause slide: the broken path in red](docs/screenshots/bug-diagnosis.png) |
 | **Schematic SVG** | **Animated flow** |
+|---|---|
 | ![boxes and arrows, the real shape of the system](docs/screenshots/schematic.png) | ![dots moving along the request path](docs/screenshots/animated-flow.png) |
 | **Interactive** | **Toggle-gated flow** |
 | ![a slider that redraws the diagram](docs/screenshots/interactive-widget.png) | ![a checkbox that opens and closes a path](docs/screenshots/toggle-gated.png) |

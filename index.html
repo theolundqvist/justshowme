@@ -126,11 +126,12 @@
 
     <section id="prs">
       <h2>2 · Your PR descriptions become a story of slides</h2>
-      <p class="lead">When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. Shot headless, uploaded inline with <a href="https://github.com/theolundqvist/gh-img">gh-img</a>.</p>
+      <p class="lead">When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. Shot headless, uploaded inline with <a href="https://github.com/theolundqvist/gh-img">gh-img</a>. Here's a real one — a 32-second API freeze, diagnosed and fixed across four slides:</p>
       <div class="gallery" style="margin-top:24px">
-        <figure><img src="docs/screenshots/slide-deck.png" alt="A plan slide: one architecture diagram with a few words"><figcaption>The plan</figcaption></figure>
-        <figure><img src="docs/screenshots/bug-diagnosis.png" alt="A bug root-cause slide showing the missing path in red"><figcaption>The root cause</figcaption></figure>
+        <figure><a href="examples/event-loop.html"><img src="docs/screenshots/bug-diagnosis.png" alt="A slide showing a 32.4-second gap where the event loop scheduled no work"></a><figcaption>The bug, measured</figcaption></figure>
+        <figure><a href="examples/event-loop.html"><img src="docs/screenshots/slide-deck.png" alt="A before/after slide showing 56 seconds dropping to 54 milliseconds"></a><figcaption>The fix, measured</figcaption></figure>
       </div>
+      <p style="margin-top:14px"><a class="btn primary" href="examples/event-loop.html">▶ Open the live slide story</a></p>
     </section>
 
     <section id="install">
