@@ -131,7 +131,7 @@
     this.deck.addEventListener('touchend',function(e){var dy=ty-e.changedTouches[0].clientY;if(Math.abs(dy)>50){dy>0?self.next():self.prev();}});
   };
   Deck.prototype._observe=function(){
-    var self=this,o=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('visible');self.current=self.slides.indexOf(en.target);self._update();}});},{threshold:0.5});
+    var self=this,o=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('visible');self.current=self.slides.indexOf(en.target);self._update();}else{en.target.classList.remove('visible');}});},{threshold:0.5});
     this.slides.forEach(function(s){o.observe(s);});
   };
   Deck.prototype.go=function(i){this.slides[Math.max(0,Math.min(i,this.total-1))].scrollIntoView({behavior:'smooth'});};
