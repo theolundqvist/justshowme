@@ -19,7 +19,7 @@ Instead of a 600-line markdown plan, your agent hands you an interactive diagram
 
 ## 2 · Your PR descriptions become a story of slides
 
-When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. Shot headless, uploaded inline with [`gh-img`](https://github.com/theolundqvist/gh-img). One diagram per slide, a few words, no paragraphs.
+JustShowMe draws the story; [`gh-img`](https://github.com/theolundqvist/gh-img) puts it in the pull request. Together they turn the change into 1–4 focused slides a reviewer can understand inline: one diagram per slide, a few words, no paragraphs.
 
 Here's a real one — a 32-second API freeze, diagnosed and fixed across four slides. **▶ [Open the live slide story →](https://theolundqvist.github.io/justshowme/examples/event-loop.html)**
 
