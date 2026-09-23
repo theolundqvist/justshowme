@@ -2,17 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>How one synchronous loop froze an API for 32 seconds · justshowme</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="A real bug, diagnosed and fixed across four hand-inked slides: event-loop starvation from quadratic re-parsing, fixed with parse-once and a banded Levenshtein.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="How one synchronous loop froze an API for 32 seconds · justshowme">
-<meta property="og:description" content="A real bug, diagnosed and fixed across four hand-inked slides: event-loop starvation from quadratic re-parsing, fixed with parse-once and a banded Levenshtein.">
-<meta property="og:url" content="https://theolundqvist.github.io/justshowme/examples/event-loop.html">
-<meta property="og:image" content="https://theolundqvist.github.io/justshowme/docs/media/event-loop-1.jpg">
-<meta property="og:image:alt" content="A hand-inked slide: the event loop frozen for 32.4 seconds while MySQL sat idle">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://theolundqvist.github.io/justshowme/docs/media/event-loop-1.jpg">
+<title>Pixelviz Deck</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=block">
 <style>
   html,body{margin:0;height:100%;background:#15120e;color:#8a735c;font:13px ui-monospace,Menlo,monospace}
@@ -2441,240 +2431,22 @@ function lint(i, t) {
   return issues;
 }
 
-// ---- scenes ----
-const polyFill = (k, polys, color, alpha = 1) => {
-  const c = k.ctx;
-  c.save(); c.globalAlpha *= alpha; c.fillStyle = k.pal[color]; c.beginPath();
-  for (const p of polys) k.L.tracePath(c, p, true);
-  c.fill('evenodd'); c.restore();
-};
-
-// 1 · story: the event loop froze while MySQL idled
-const E = { CX: 860, CY: 440, R: 230, BAND: 46 };
-const TL = { X: 96, W: 1000, Y: 812, SEC: 33.5 };
-const QX = 128, QY = 330, QP = 56;
-const DB = { x: 1520, y: 236, w: 280, h: 232 };
-const LENS1 = { x: 1390, y: 790, r: 110 };
-const EXIT = [...Array(21).keys()].sort((a, b) => Math.hypot(QX + (b % 3) * QP - 574, QY + Math.floor(b / 3) * QP - 440) - Math.hypot(QX + (a % 3) * QP - 574, QY + Math.floor(a / 3) * QP - 440)).reduce((r, i, n) => (r[i] = 20 - n, r), []);
-const ROUTE = (() => {
-  const pts = [];
-  for (let a = 0; a <= 32; a++) { const an = Math.PI + a / 32 * Math.PI; pts.push([E.CX + Math.cos(an) * (E.R + 56), E.CY + Math.sin(an) * (E.R + 56)]); }
-  pts.push([DB.x - 14, DB.y + 120]);
-  return pts;
-})();
+// ---- scenes: replace these with the deck's beats ----
 scene({
-  title: '32.4 seconds frozen',
-  caption: 'the process was starved, not its dependencies',
+  title: 'Send path: desktop to MySQL',
+  caption: 'api enqueues; the worker owns the write',
   plate: 'paper',
-  band: 'stripeApricot',
-  duration: 5,
-  steps: [0.6],
-  draw(k, t) {
-    const jam = k.seg(t, 0, 0.58), rel = k.seg(t, 0.6, 0.97), blocked = t < 0.6;
-    const { CX, CY, R, BAND } = E;
-    k.construct(CX, CY, R, { rings: [1.18, 1.42], reach: 1.5, rays: 16 });
-    k.ink(ROUTE, { width: 2, color: 'inkFaint', dash: [10, 10] });
-    if (rel > 0) k.ink(ROUTE, { width: 3.5, color: 'annBlue', p: k.ease.outCubic(k.seg(rel, 0, 0.7)), arrow: 22 });
-
-    const outer = k.ellipse(CX, CY, R, R, 120), inner = k.ellipse(CX, CY, R - BAND, R - BAND, 120);
-    polyFill(k, [outer, inner], blocked ? 'redPale' : 'tealPale');
-    if (blocked) k.crossHatch([outer, inner], { color: 'red', spacing: 7, width: 1.3, alpha: 0.35 + 0.5 * jam, clip: true });
-    else k.hatch([outer, inner], { color: 'tealDeep', spacing: 9, width: 1.2, alpha: 0.5, clip: true });
-    k.ink(outer.concat([outer[0]]), { width: 6, closed: true });
-    k.ink(inner.concat([inner[0]]), { width: 3.5, closed: true });
-    k.ticks(CX, CY, { r: R - BAND - 4, inward: true, n: 60, major: 5, len: 8, majorLen: 18, width: 1.6, alpha: 0.7 });
-    const spin = blocked ? 0 : k.twos(rel) * k.TAU * 1.5;
-    for (let c = 0; c < 3; c++) {
-      const an = -Math.PI / 2 + c * k.TAU / 3 + spin, rr = R - BAND / 2;
-      const p0 = [CX + Math.cos(an - 0.09) * rr, CY + Math.sin(an - 0.09) * rr], p1 = [CX + Math.cos(an) * rr, CY + Math.sin(an) * rr];
-      k.ink([p0, p1], { width: 3, color: blocked ? 'inkSoft' : 'tealDeep', arrow: 20 });
-    }
-    k.arc(CX, CY, R + 24, -Math.PI / 2, -Math.PI / 2 + jam * 0.965 * k.TAU, { width: 4, arrow: 18, color: 'annMagenta' });
-
-    const out = k.ease.inOutCubic(k.seg(t, 0.6, 0.75)), pos = 0.9 - out * 0.3, bAng = pos + Math.PI / 2 + out * 0.5, br = R - BAND / 2 + out * 156;
-    const bx = CX + Math.cos(pos) * br, by = CY + Math.sin(pos) * br;
-    const brick = [[-56, -30], [56, -30], [56, 30], [-56, 30]].map(([x, y]) => [bx + x * Math.cos(bAng) - y * Math.sin(bAng), by + x * Math.sin(bAng) + y * Math.cos(bAng)]);
-    k.ink(brick, { closed: true, width: 5, fill: 'red' });
-    k.crossHatch(brick, { color: 'ink', spacing: 6, width: 1.3, alpha: 0.75, clip: true, tone: 0.8 });
-    k.region('brick', Math.round(bx - 64), Math.round(by - 64), 128, 128);
-    k.lens('lens', LENS1.x, LENS1.y, LENS1.r, {
-      target: [bx, by], targetR: 76,
-      draw(k) {
-        const px = LENS1.x - 46, py = LENS1.y - 58;
-        k.ink([[px, py], [px + 70, py], [px + 92, py + 22], [px + 92, py + 116], [px, py + 116]], { closed: true, width: 3.5, fill: 'white' });
-        for (let l = 0; l < 6; l++) k.line(px + 14, py + 26 + l * 15, px + 78 - (l % 3) * 12, py + 26 + l * 15, { width: 2.2, color: 'inkSoft' });
-        k.arc(LENS1.x, LENS1.y, 92, -2.4 + (blocked ? jam * 30 : 0), 1.9 + (blocked ? jam * 30 : 0), { width: 4.5, arrow: 22, color: blocked ? 'annMagenta' : 'inkFaint' });
-      },
-    });
-    k.text('lensA', 1526, 752, 'one synchronous', { size: 40, weight: 600 });
-    k.text('lensB', 1526, 800, 're-parse', { size: 40, weight: 600 });
-
-    k.text('count', CX, CY - 72, `${(32.4 * jam).toFixed(1)} s`, { size: 96, weight: 700, color: 'red', align: 'center' });
-    k.text('state', CX, CY + 40, blocked ? 'loop blocked' : 'loop free again', { size: 40, weight: 600, color: blocked ? 'red' : 'tealDeep', align: 'center' });
-
-    k.text('q', 96, 176, '21 handlers', { size: 48, weight: 700 });
-    k.text('q2', 96, 236, blocked ? 'waiting' : 'released', { size: 40, color: blocked ? 'red' : 'tealDeep' });
-    k.region('queue', QX - 28, QY - 28, 3 * QP, 7 * QP);
-    for (let i = 0; i < 21; i++) {
-      const x = QX + (i % 3) * QP, y = QY + Math.floor(i / 3) * QP;
-      if (i >= jam * 21 + 1) continue;
-      const p = k.twos((rel - EXIT[i] / 21 * 0.6) / 0.35);
-      if (p <= 0) k.dot(x, y, 20, { fill: 'tealPale', width: 3 });
-      else {
-        k.dot(x, y, 20, { dash: [5, 6], color: 'inkFaint', width: 2 });
-        if (p < 1) { const [tx, ty] = k.along([[x, y], ...ROUTE], p); k.dot(tx, ty, 16, { fill: 'teal', width: 3 }); }
-        else if (p < 1.4) k.ring(DB.x - 14, DB.y + 120, 14 + (p - 1) * 110, { color: 'annYellow', width: 3, alpha: 1 - (p - 1) / 0.4 });
-      }
-    }
-
-    k.cylinder('db', DB.x, DB.y, DB.w, DB.h, { label: 'MySQL', fill: 'tealPale', top: 'white' });
-    k.text('db2', DB.x + DB.w / 2, 496, 'idle: 0.09–0.45 s/query', { size: 40, color: 'inkSoft', align: 'center' });
-
-    const px = TL.W / TL.SEC, bw = 32.4 * px * jam, dw = 1.1 * px * rel;
-    k.bar('blocked', TL.X, TL.Y, Math.max(8, Math.round(bw)), 40, { color: 'red' });
-    if (rel > 0) k.bar('done', Math.round(TL.X + 32.4 * px) + 12, TL.Y, Math.max(4, Math.round(dw)), 40, { color: 'teal' });
-    k.ticks(TL.X, TL.Y + 40, { length: TL.W, n: 67, len: 6, major: 10, majorLen: 14, alpha: 0.6 });
-    if (bw > 360) k.dim('dimB', TL.X, TL.Y - 20, TL.X + bw, TL.Y - 20, { label: `${(32.4 * jam).toFixed(1)} s blocked`, color: 'red', p: 1 });
-    if (t >= 0.9) k.text('done2', TL.X + TL.W, TL.Y + 64, 'all 21 done in under 1.1 s', { size: 40, weight: 700, color: 'tealDeep', align: 'right' });
-  },
-});
-
-// 2 · mechanism: every record re-parsed every earlier record
-const N = 12, PAIRS = 66, TX = 300, TY = 236, TPX = 46, TPY = 44;
-scene({
-  title: 'Cause: quadratic re-parsing',
-  caption: "each record's text parsed once; comparison texts normalized once",
-  plate: 'blueprint',
   duration: 3,
+  steps: [0.5],
   draw(k, t) {
-    const done = Math.floor(k.twos(k.seg(t, 0, 0.8)) * PAIRS), after = Math.min(N, done);
-    k.guide(540, 476, 330, { alpha: 0.14, dash: [3, 8] });
-    k.guide(1600, 520, 240, { alpha: 0.14 });
-    k.text('hb', 96, 160, 'before: re-parse every earlier record', { size: 44, weight: 600, color: 'schemHero' });
-    k.text('ha', 1060, 160, 'after: parse once', { size: 44, weight: 600, color: 'schemOk' });
-    let head = null;
-    for (let i = 0; i < N; i++) {
-      const y = TY + i * TPY;
-      for (let j = 0; j < i; j++) {
-        const g = i * (i - 1) / 2 + j, x = TX + j * TPX, cell = k.rectPts(x, y, 38, 36), on = g < done;
-        if (on) { polyFill(k, [cell], 'schemHero', done - g < 6 ? 0.75 : 0.35); if (g === done - 1 && done < PAIRS) head = [x + 19, y + 18]; }
-        k.stroke(cell, { closed: true, width: 1.4, color: on ? 'schemHero' : 'lavender', alpha: on ? 0.9 : 0.3 });
-      }
-      const cy = TY + i * TPY, cell = k.rectPts(1080, cy, 38, 36);
-      if (i < after) polyFill(k, [cell], 'schemOk', i === after - 1 && after < N ? 0.8 : 0.4);
-      k.stroke(cell, { closed: true, width: 1.4, color: i < after ? 'schemOk' : 'lavender', alpha: i < after ? 0.95 : 0.3 });
-    }
-    if (head) k.glowDot(head[0], head[1], 8, { color: 'schemHero', rays: 8 });
-    if (after < N && done > 0) k.glowDot(1099, TY + (after - 1) * TPY + 18, 8, { color: 'schemOk' });
-    k.dim('rows', 272, TY, 272, TY + N * TPY - 8, { label: 'N = 12', side: 'left' });
-    k.dim('cols', TX, TY + N * TPY + 16, TX + 11 * TPX - 8, TY + N * TPY + 16, { label: 'N − 1 = 11 earlier', side: 'below' });
-    k.ticks(TX, TY + N * TPY + 4, { length: 11 * TPX - 8, n: 11, len: 8, major: 1, majorLen: 12, side: 1, alpha: 0.5 });
-    k.text('nb', 784, 236, `${done}`, { size: 128, weight: 700, color: 'schemHero', align: 'right' });
-    k.text('nb2', 784, 380, 'parses', { size: 40, color: 'lavender', align: 'right' });
-    k.region('col', 1072, TY - 8, 54, N * TPY + 8);
-    k.text('fb', TX + 5 * TPX + 15, 876, 'N(N−1)/2', { size: 64, weight: 700, color: 'schemHero', align: 'center' });
-    k.text('fa', 1099, 876, 'N', { size: 64, weight: 700, color: 'schemOk', align: 'center' });
-    k.text('na', 1160, 236, `${after}`, { size: 128, weight: 700, color: 'schemOk' });
-    k.text('na2', 1160, 380, 'parses', { size: 40, color: 'lavender' });
-
-    k.disc('cache', 1600, 520, 116, { fill: 'navyLight' });
-    k.hexLattice(k.ellipse(1600, 520, 100, 100, 72), { r: 16, color: 'schemOk', alpha: 0.35 + 0.3 * (after / N), clip: true });
-    k.glowDot(1600, 520, 10, { color: 'schemOk', rays: 12, intensity: 0.4 + 0.6 * (after / N) });
-    for (const [nx, ny, an] of [[1820, 380, 0], [1826, 660, 1], [1400, 330, 2]]) {
-      k.stroke([[1600 + (nx - 1600) * 0.5, 520 + (ny - 520) * 0.5], [nx, ny]], { width: 1.2, alpha: 0.4 });
-      k.disc(`node${an}`, nx, ny, 30, { fill: 'navyDeep', width: 1.6 });
-      if (an === 0) k.hexLattice(k.ellipse(nx, ny, 22, 22, 36), { r: 7, clip: true, alpha: 0.5 });
-      else if (an === 1) for (let l = -2; l <= 2; l++) k.stroke([[nx - 18, ny + l * 8], [nx + 18, ny + l * 8]], { width: 1.2, alpha: 0.6 });
-      else k.glowDot(nx, ny, 5, { rays: 6 });
-    }
-    k.arrow('col', 'cache', { bend: 50, color: 'schemOk', p: k.seg(t, 0.1, 0.5) });
-    k.text('cacheL', 1600, 664, 'earlierTexts', { size: 44, weight: 600, align: 'center', color: 'schemOk' });
-    k.text('cache2', 1600, 720, 'parsed once, reused', { size: 40, color: 'lavender', align: 'center' });
-  },
-});
-
-// 3 · mechanism: the band skips cells that cannot matter
-const M = 480, LX = 224, RX = 880, MY = 232, B = 24, LENS3 = { x: 1640, y: 472, r: 200, mag: 5 };
-const bandPoly = [[RX, MY], [RX + B, MY], [RX + M, MY + M - B], [RX + M, MY + M], [RX + M - B, MY + M], [RX, MY + B]];
-const drawMatrix = (k, x0, rows, band) => {
-  const clipTo = (h, fn) => { const c = k.ctx; c.save(); c.beginPath(); c.rect(x0, MY, M, h); c.clip(); fn(); c.restore(); };
-  const grid = new Path2D();
-  for (let g = 8; g < M; g += 8) { grid.moveTo(x0 + g, MY); grid.lineTo(x0 + g, MY + M); grid.moveTo(x0, MY + g); grid.lineTo(x0 + M, MY + g); }
-  k.ctx.save(); k.ctx.strokeStyle = k.pal.lavender; k.ctx.globalAlpha = 0.12; k.ctx.lineWidth = 0.6; k.ctx.stroke(grid); k.ctx.restore();
-  if (band) {
-    const outside = [k.rectPts(x0, MY, M, M), bandPoly];
-    k.stipple(outside, { spacing: 9, r: [0.8, 1.6], color: 'lavender', alpha: 0.45, seed: 3 });
-    clipTo(rows, () => { polyFill(k, [bandPoly], 'schemOk', 0.35); k.hatch(bandPoly, { spacing: 5, width: 1, color: 'schemOk', alpha: 0.8, clip: true, seed: 4 }); });
-    k.stroke(bandPoly, { closed: true, width: 2, color: 'schemOk', alpha: 0.9 });
-  } else clipTo(rows, () => { polyFill(k, [k.rectPts(x0, MY, M, M)], 'schemHero', 0.3); k.hatch(k.rectPts(x0, MY, M, M), { spacing: 6, width: 1, color: 'schemHero', alpha: 0.75, clip: true, seed: 5 }); });
-  k.stroke([[x0, MY], [x0 + M, MY + M]], { width: 1.5, dash: [8, 8], color: 'lineWhite', alpha: 0.6 });
-};
-scene({
-  title: 'Fix: banded Levenshtein',
-  caption: '0.99 threshold ⇒ distance ≤ 1% of length, so the band is exact',
-  plate: 'blueprint',
-  duration: 3,
-  draw(k, t) {
-    const f = k.twos(k.seg(t, 0, 0.8)), rows = Math.round(f * M);
-    k.text('sub', 960, 152, 'skip every cell more than k off the diagonal', { size: 44, weight: 600, align: 'center' });
-    k.box('full', LX, MY, M, M, { radius: 4, fill: 'navyDeep', color: 'schemHero' });
-    k.box('band', RX, MY, M, M, { radius: 4, fill: 'navyDeep', color: 'schemOk' });
-    drawMatrix(k, LX, rows, false);
-    drawMatrix(k, RX, rows, true);
-    if (f < 1) {
-      k.stroke([[LX, MY + rows], [LX + M, MY + rows]], { width: 3, color: 'lineWhite' });
-      k.glowDot(LX + M, MY + rows, 8, { color: 'schemHero' });
-      const c0 = Math.max(0, rows - B), c1 = Math.min(M, rows + B);
-      k.stroke([[RX + c0, MY + rows], [RX + c1, MY + rows]], { width: 3, color: 'lineWhite' });
-      k.glowDot(RX + c1, MY + rows, 8, { color: 'schemOk' });
-    }
-    k.text('inf1', RX + 330, MY + 90, 'INF', { size: 40, weight: 600, color: 'lavender', parent: 'band' });
-    k.text('inf2', RX + 70, MY + 350, 'INF', { size: 40, weight: 600, color: 'lavender', parent: 'band' });
-    k.dim('side', 200, MY, 200, MY + M, { label: '5,000', side: 'left' });
-    const sx = RX + 160, sy = MY + 160;
-    k.lens('zoom', LENS3.x, LENS3.y, LENS3.r, { target: [sx, sy], targetR: 40, source: [sx, sy], mag: LENS3.mag, color: 'schemOk', draw: k2 => drawMatrix(k2, RX, rows, true) });
-    const lx = LENS3.x, ly = LENS3.y;
-    k.dim('kdim', lx + 40, ly + 40, lx + 40, ly - 80, { color: 'lineWhite' });
-    k.text('kk', lx + 20, ly - 38, 'k ≈ 50', { size: 36, weight: 700, align: 'right', parent: 'zoom' });
-    k.text('linf1', lx + 95, ly - 123, 'INF', { size: 36, weight: 600, color: 'lavender', align: 'center', parent: 'zoom' });
-    k.text('linf2', lx - 95, ly + 87, 'INF', { size: 36, weight: 600, color: 'lavender', align: 'center', parent: 'zoom' });
-    k.text('lf', LX + M / 2, 736, 'full DP, 5,000 × 5,000', { size: 40, color: 'lavender', align: 'center' });
-    k.text('cf', LX + M / 2, 792, `${(25 * f).toFixed(1)}M cells`, { size: 88, weight: 700, color: 'schemHero', align: 'center' });
-    k.text('lb', RX + M / 2, 736, 'band k ≈ 50 (drawn wide)', { size: 40, color: 'lavender', align: 'center' });
-    k.text('cb', RX + M / 2, 792, `${Math.round(250 * f)}k cells`, { size: 88, weight: 700, color: 'schemOk', align: 'center' });
-  },
-});
-
-// 4 · story: the result
-const RES = [['11 records · verbatim', 587, '587 ms', 6, '6 ms'], ['11 · 300 words rewritten', 2100, '2.1 s', 9, '9 ms'], ['11 · 500 words rewritten', 6100, '6.1 s', 15, '15 ms'], ['25 · rewritten', 15900, '15.9 s', 25, '25 ms'], ['37 · rewritten', 56000, '56.0 s', 54, '54 ms']];
-scene({
-  title: 'Result: 56 s → 54 ms',
-  caption: 'sqrt scale · real function on synthetic record lists · byte-identical output',
-  plate: 'paper',
-  band: 'stripeSage',
-  draw(k) {
-    const X0 = 640, SPAN = 760, w = ms => Math.max(10, Math.round(Math.sqrt(ms) * SPAN / Math.sqrt(56000)));
-    k.construct(1640, 270, 200, { rings: [1, 1.35], reach: 1.7, rays: 12 });
-    for (const [s, lab] of [[0, '0'], [1000, '1 s'], [10000, '10 s'], [30000, '30 s'], [56000, '56 s']]) {
-      const x = X0 + Math.round(Math.sqrt(s) * SPAN / Math.sqrt(56000));
-      k.stroke([[x, 160], [x, 900]], { width: 1.2, color: 'inkFaint', alpha: 0.45, dash: [4, 8] });
-      k.text(`ax${s}`, x, 916, lab, { size: 32, color: 'inkSoft', align: 'center' });
-    }
-    k.ticks(X0, 900, { length: SPAN, n: 76, len: 6, major: 19, majorLen: 12, side: -1, alpha: 0.6 });
-    RES.forEach(([label, b, bl, a, al], i) => {
-      const y = 168 + i * 148;
-      k.text(`r${i}`, 604, y + 38, label, { size: 40, weight: 600, align: 'right' });
-      k.bar(`bb${i}`, X0, y, w(b), 52, { color: 'orange' });
-      k.text(`vb${i}`, X0 + w(b) + 20, y + 6, bl, { size: 40, weight: 600, color: 'ink' });
-      k.bar(`ba${i}`, X0, y + 64, w(a), 52, { color: 'teal' });
-      k.text(`va${i}`, X0 + w(a) + 20, y + 70, al, { size: 40, weight: 700, color: 'tealDeep' });
-    });
-    k.ink([[1410, 812], [1330, 856], [1100, 862], [830, 858]], { width: 4, color: 'annMagenta', arrow: 24 });
-    k.text('hero', 1640, 206, '~1000×', { size: 128, weight: 700, color: 'tealDeep', align: 'center' });
-    k.ring(1640, 272, 250, { ry: 118, width: 3.5 });
-    k.text('hero2', 1640, 406, 'faster at 37 records', { size: 40, color: 'inkSoft', align: 'center' });
-    k.bar('lgbS', 1500, 512, 40, 32, { color: 'orange' }); k.text('lgb', 1560, 508, 'before', { size: 40, color: 'inkSoft' });
-    k.bar('lgaS', 1500, 572, 40, 32, { color: 'teal' }); k.text('lga', 1560, 568, 'after', { size: 40, color: 'inkSoft' });
+    k.box('desk', 120, 420, 320, 160, { label: 'desktop' });
+    k.box('api', 600, 420, 320, 160, { label: 'api', fill: 'orangePale' });
+    k.box('queue', 1080, 420, 320, 160, { label: 'bullmq' });
+    k.cylinder('db', 1560, 380, 240, 240, { label: 'mysql', fill: 'tealPale' });
+    k.arrow('desk', 'api', { p: k.seg(t, 0, 0.25) });
+    k.arrow('api', 'queue', { p: k.seg(t, 0.25, 0.5) });
+    k.arrow('queue', 'db', { p: k.seg(t, 0.5, 0.8), color: 'teal' });
+    k.dim('span', 120, 700, 1800, 700, { label: 'one request, four hops', side: 'below', p: k.seg(t, 0.8, 1) });
   },
 });
 
