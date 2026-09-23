@@ -4,24 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>justshowme — make your AI agent draw diagrams, not walls of text</title>
-<meta name="description" content="A Claude Code skill that turns your AI agent's explanations into gazable diagrams, animated flows, and slide decks — and attaches them to your pull requests. Stop reading markdown. Just show me.">
+<meta name="description" content="Two Claude Code skills that turn your AI agent's explanations into drawings: interactive diagrams you can poke, and hand-inked animated slide stories whose posters and video drop straight into your pull requests. Stop reading markdown. Just show me.">
 <link rel="canonical" href="https://theolundqvist.github.io/justshowme/">
 <meta name="keywords" content="claude code skill, ai diagrams, visual explanations, slide deck, ai agent, mermaid, svg, pull request screenshots, visual learner, llm">
 <meta name="author" content="Theodor Lundqvist">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="justshowme — make your AI agent draw, not write">
-<meta property="og:description" content="Turn your AI agent's explanations into diagrams, animated flows, and slide decks — and attach them to your PRs. Stop reading walls of text.">
+<meta property="og:description" content="Turn your AI agent's explanations into interactive diagrams and hand-inked slide stories, and attach them to your PRs. Stop reading walls of text.">
 <meta property="og:url" content="https://theolundqvist.github.io/justshowme/">
-<meta property="og:image" content="https://theolundqvist.github.io/justshowme/docs/screenshots/bug-diagnosis.png">
-<meta property="og:image:alt" content="A slide diagnosing a 32-second API freeze: a 32.4-second gap where the event loop scheduled no work">
+<meta property="og:image" content="https://theolundqvist.github.io/justshowme/docs/media/event-loop-1.jpg">
+<meta property="og:image:alt" content="A hand-inked slide: the event loop frozen for 32.4 seconds while MySQL sat idle">
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="justshowme — make your AI agent draw, not write">
-<meta name="twitter:description" content="Turn your AI agent's explanations into diagrams and slide decks — and attach them to your PRs.">
-<meta name="twitter:image" content="https://theolundqvist.github.io/justshowme/docs/screenshots/bug-diagnosis.png">
+<meta name="twitter:description" content="Turn your AI agent's explanations into interactive diagrams and hand-inked slide stories, and attach them to your PRs.">
+<meta name="twitter:image" content="https://theolundqvist.github.io/justshowme/docs/media/event-loop-1.jpg">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"justshowme","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux","description":"A Claude Code skill that turns an AI agent's explanations into diagrams, animated flows, and slide decks, and attaches them to pull requests.","author":{"@type":"Person","name":"Theodor Lundqvist"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://opensource.org/licenses/MIT"}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"justshowme","applicationCategory":"DeveloperApplication","operatingSystem":"macOS, Linux","description":"Two Claude Code skills that turn an AI agent's explanations into interactive diagrams and hand-inked animated slide stories, and attach them to pull requests.","author":{"@type":"Person","name":"Theodor Lundqvist"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://opensource.org/licenses/MIT"}
 </script>
 <style>
   :root{
@@ -54,7 +54,8 @@
   .oneliner b{color:var(--acc2);overflow-wrap:anywhere}
   @media(max-width:520px){.oneliner{font-size:12px;padding:10px 12px;gap:6px}}
   figure{margin:36px 0}
-  img{max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+  img,video{max-width:100%;height:auto;border-radius:14px;border:1px solid var(--line);display:block}
+  video{width:100%;aspect-ratio:16/9;background:#15120e}
   figcaption{color:var(--dim);font-size:14px;text-align:center;margin-top:10px}
   section{padding:48px 0;border-top:1px solid var(--line)}
   h2{font-size:clamp(24px,3.2vw,32px);letter-spacing:-.02em;margin:0 0 12px}
@@ -69,12 +70,14 @@
   /* gallery */
   .gallery{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
   .gallery figure{margin:0}
+  code{font-family:var(--mono);font-size:.9em;color:#cdd9e5}
   /* install */
   pre{background:#10151c;border:1px solid var(--line);border-radius:12px;padding:18px;overflow-x:auto;
     font-family:var(--mono);font-size:13.5px;line-height:1.7;color:#cdd9e5}
   .muted{color:var(--dim)}
   footer{padding:40px 0 70px;border-top:1px solid var(--line);color:var(--dim);font-size:14px;text-align:center}
   @media(max-width:760px){.uses{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}}
+  @media(max-width:520px){.wrap{padding:0 16px}header{gap:12px}.logo{font-size:17px}nav{white-space:nowrap}nav a{margin-left:10px;font-size:13.5px}.hero{padding-top:36px}}
 </style>
 </head>
 <body>
@@ -82,7 +85,8 @@
   <header>
     <div class="logo"><b>just</b>showme</div>
     <nav>
-      <a href="#how">How it works</a>
+      <a href="#how">visualize</a>
+      <a href="#prs">pixelviz</a>
       <a href="#install">Install</a>
       <a href="https://github.com/theolundqvist/justshowme">GitHub</a>
     </nav>
@@ -93,15 +97,15 @@
   <div class="hero">
     <div class="wrap">
       <h1>Stop reading walls of text.<br><span class="hl">Just show me.</span></h1>
-      <p class="sub">A Claude Code skill that makes your AI agent <em>draw</em> the answer — diagrams, animated flows, slide decks — instead of dumping markdown.</p>
+      <p class="sub">Two Claude Code skills that make your AI agent <em>draw</em> the answer instead of dumping markdown: interactive visuals you can poke, and hand-inked slide stories for your PRs.</p>
       <div class="cta">
         <a class="btn primary" href="examples/event-loop.html">▶ Open the live demo</a>
         <a class="btn ghost" href="https://github.com/theolundqvist/justshowme">View on GitHub</a>
       </div>
       <div class="oneliner">Tell your agent:&nbsp; <b>“install theolundqvist/justshowme”</b></div>
       <figure>
-        <a href="examples/event-loop.html"><img src="docs/screenshots/bug-diagnosis.png" alt="A slide diagnosing a 32-second API freeze: a 32.4-second gap where the event loop scheduled no work"></a>
-        <figcaption>A real bug, diagnosed and fixed across four slides. <a href="examples/event-loop.html">Arrow through it live →</a></figcaption>
+        <video src="docs/media/event-loop.mp4" poster="docs/media/event-loop-1.jpg" autoplay muted loop playsinline aria-label="A four-slide pixelviz deck: an event loop frozen for 32.4 seconds, the quadratic re-parse behind it, the banded fix, and 56 s dropping to 54 ms"></video>
+        <figcaption>A real bug, diagnosed and fixed in four hand-inked slides. <a href="examples/event-loop.html">Step through it live →</a></figcaption>
       </figure>
     </div>
   </div>
@@ -109,7 +113,7 @@
   <div class="wrap">
     <section id="how" style="border-top:none">
       <h2>1 · Iterate on plans with visuals you can <em>poke</em></h2>
-      <p class="lead">Sometimes a diagram isn't enough — you need to <strong>feel</strong> it. Your agent hands you an interactive widget: hover it, toggle it, drag it, and the problem and the solution land in seconds. Then you say “no, do it this way” and it re-renders. Here's a real one — an “undo send” grace window you grasp by feeling it for five seconds.</p>
+      <p class="lead"><code>visualize</code> builds interactive HTML. Sometimes a diagram isn't enough — you need to <strong>feel</strong> it. Your agent hands you an interactive widget: hover it, toggle it, drag it, and the problem and the solution land in seconds. Then you say “no, do it this way” and it re-renders. Here's a real one — an “undo send” grace window you grasp by feeling it for five seconds.</p>
       <figure>
         <a href="examples/takeoff.html"><img src="docs/screenshots/interactive-demo.png" alt="An interactive countdown demo: hovering holds the countdown and pushes the deadline out"></a>
         <figcaption>Generated HTML you can actually poke — hover the pill and the deadline moves.</figcaption>
@@ -119,7 +123,7 @@
 
     <section id="primitives">
       <h2>Six primitives, nothing decorative</h2>
-      <p class="lead">Every visual is composed from a small kit of proven, self-contained primitives — so output stays clean instead of drifting into clip-art.</p>
+      <p class="lead">Every <code>visualize</code> visual is composed from a small kit of proven, self-contained primitives — so output stays clean instead of drifting into clip-art.</p>
       <div class="gallery">
         <figure><img src="docs/screenshots/schematic.png" alt="Schematic SVG: boxes and arrows showing the real shape of the system"><figcaption>Schematic SVG</figcaption></figure>
         <figure><img src="docs/screenshots/animated-flow.png" alt="Animated flow: dots moving along the request path"><figcaption>Animated flow</figcaption></figure>
@@ -131,30 +135,38 @@
     </section>
 
     <section id="prs">
-      <h2>2 · Your PR descriptions become a story of slides</h2>
-      <p class="lead">When your agent opens a pull request, it attaches the 1–4 slides that walk a reviewer through the change. Shot headless, uploaded inline with <a href="https://github.com/theolundqvist/gh-img">gh-img</a>. Here's a real one — a 32-second API freeze, diagnosed and fixed across four slides:</p>
+      <h2>2 · Your PRs tell the story in hand-inked slides</h2>
+      <p class="lead"><code>pixelviz</code> draws the change as a few 1920×1080 slides: paper for the story, blueprint for the mechanism, a lens on the culprit, dimension lines on what was measured. Each slide animates in steps you can pause and read, and ends on a poster that tells the whole story alone, so it doubles as the PR screenshot. Frames render from code, are linted for overlaps and clipping, checked for determinism, and exported as PNG posters plus a small <code>deck.mp4</code> that GitHub plays inline.</p>
       <div class="gallery" style="margin-top:24px">
-        <figure><a href="examples/event-loop.html"><img src="docs/screenshots/bug-diagnosis.png" alt="A slide showing a 32.4-second gap where the event loop scheduled no work"></a><figcaption>The bug, measured</figcaption></figure>
-        <figure><a href="examples/event-loop.html"><img src="docs/screenshots/slide-deck.png" alt="A before/after slide showing 56 seconds dropping to 54 milliseconds"></a><figcaption>The fix, measured</figcaption></figure>
+        <figure><a href="examples/event-loop.html"><img src="docs/media/event-loop-1.jpg" alt="The event loop frozen for 32.4 seconds while MySQL sat idle"></a><figcaption>The bug</figcaption></figure>
+        <figure><a href="examples/event-loop.html?scene=1"><img src="docs/media/event-loop-2.jpg" alt="66 re-parses before versus 12 after for 12 records"></a><figcaption>The cause</figcaption></figure>
+        <figure><a href="examples/event-loop.html?scene=2"><img src="docs/media/event-loop-3.jpg" alt="A banded Levenshtein matrix computing 250k cells instead of 25M"></a><figcaption>The fix</figcaption></figure>
+        <figure><a href="examples/event-loop.html?scene=3"><img src="docs/media/event-loop-4.jpg" alt="Bars showing 56 seconds dropping to 54 milliseconds"></a><figcaption>The result</figcaption></figure>
       </div>
-      <p style="margin-top:14px"><a class="btn primary" href="examples/event-loop.html">▶ Open the live slide story</a></p>
+      <p class="lead" style="margin-top:20px">In a PR, embed the poster that carries the decision and attach <code>deck.mp4</code> below it. Drag the files into the description, or upload them from the terminal with <a href="https://github.com/theolundqvist/gh-img">gh-img</a>.</p>
+      <p style="margin-top:14px"><a class="btn primary" href="examples/event-loop.html">▶ Step through the live deck</a></p>
     </section>
 
     <section id="install">
       <h2>Install</h2>
       <p class="lead">The whole point: tell your agent <strong>“install theolundqvist/justshowme”</strong> and it sets itself up. Or do it by hand:</p>
-      <pre># 1. Copy the skill into your skills dir (the clone is just staging)
+      <pre># 1. Copy both skills into your skills dir (the clone is just staging)
 git clone https://github.com/theolundqvist/justshowme /tmp/justshowme
-cp -r /tmp/justshowme/skills/visualize ~/.claude/skills/
+mkdir -p ~/.claude/skills
+cp -r /tmp/justshowme/skills/visualize /tmp/justshowme/skills/pixelviz ~/.claude/skills/
 
-# 2. PR screenshots (optional)
+# 2. pixelviz renders with Playwright and ffmpeg
+(cd ~/.claude/skills/pixelviz &amp;&amp; npm i &amp;&amp; npx playwright install --only-shell chromium)
+ffmpeg -version   # brew install ffmpeg / apt install ffmpeg
+
+# 3. PR uploads from the terminal (optional)
 gh extension install theolundqvist/gh-img
 
-# 3. Make it the default — paste docs/AGENTS-snippet.md
+# 4. Make it the default — paste docs/AGENTS-snippet.md
 #    into your ~/.claude/CLAUDE.md (or AGENTS.md)
 
-# 4. Drop the staging clone
-rm -rf /tmp/justshowme
+# 5. Drop the staging clone
+rm -rf /tmp/justshowme</pre>
       <p class="muted">Works in any agent harness that reads a <code>SKILL.md</code>. Self-contained HTML output — no build step.</p>
     </section>
   </div>
@@ -163,7 +175,7 @@ rm -rf /tmp/justshowme
 <footer>
   <div class="wrap">
     <p><strong>justshowme</strong> · MIT © Theodor Lundqvist · <a href="https://github.com/theolundqvist/justshowme">GitHub</a> · pairs with <a href="https://github.com/theolundqvist/gh-img">gh-img</a></p>
-    <p class="muted">Inspired by Anthropic's “unreasonable effectiveness of HTML” and the prior art in visual-explainer.</p>
+    <p class="muted">Inspired by Anthropic's “unreasonable effectiveness of HTML” and the prior art in visual-explainer. pixelviz's drawing engine is ported from <a href="https://github.com/kuhnhomeuk-cell/procedural-film">procedural-film</a> (MIT © Dean Kuhn).</p>
   </div>
 </footer>
 </body>
