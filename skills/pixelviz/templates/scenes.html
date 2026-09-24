@@ -2121,7 +2121,7 @@ function grainTile(mode, v) {
   g.putImageData(img, 0, 0);
   return (tiles[key] = c);
 }
-function grain(ctx, mode, T) {
+function postGrain(ctx, mode, T) {
   const b = Math.floor(T * BOIL_FPS + 1e-6), tile = grainTile(mode, Math.floor(ihash(b, 17, 3) * 4));
   const ox = Math.floor(ihash(b, 29, 5) * TILE), oy = Math.floor(ihash(b, 31, 7) * TILE);
   ctx.save(); ctx.fillStyle = ctx.createPattern(tile, 'repeat'); ctx.translate(-ox, -oy); ctx.fillRect(0, 0, W + ox, H + oy); ctx.restore();
@@ -2369,7 +2369,7 @@ const scene = def => {
   scenes.push({ duration: 0, poster: 1, fps: 24, plate: 'paper', ...def });
 };
 
-function render(i, t) {
+function render(i, t, grain = true) {
   const sc = scenes[i];
   octx.setTransform(1, 0, 0, 1, 0, 0); octx.globalAlpha = 1; octx.globalCompositeOperation = 'source-over';
   const r = kit(i, sc, t, octx), P = PLATES[sc.plate];
@@ -2377,7 +2377,7 @@ function render(i, t) {
   r.k.text('title', 64, 48, sc.title, { size: 64, weight: 700 });
   if (sc.caption) r.k.text('caption', 64, 984, sc.caption, { size: 36, color: P.sub });
   octx.save(); sc.draw(r.k, t); octx.restore();
-  grain(octx, P.grain, r.k.T);
+  if (grain) postGrain(octx, P.grain, r.k.T);
   octx.textBaseline = 'top';
   for (const tx of r.texts) {
     octx.font = FONT(tx.size, tx.weight);
@@ -2493,7 +2493,7 @@ window.pixelviz = {
   ready,
   count: () => scenes.length,
   info: i => ({ title: scenes[i].title, duration: scenes[i].duration, poster: scenes[i].poster, fps: scenes[i].fps, plate: scenes[i].plate, steps: stops(scenes[i]) }),
-  frame(i, t) { manual = true; render(i, t); return out.toDataURL('image/png'); },
+  frame(i, t, grain) { manual = true; render(i, t, grain); return out.toDataURL('image/png'); },
   lint(i, t) { manual = true; return lint(i, t); },
 };
 ready.then(() => requestAnimationFrame(tick));
