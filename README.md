@@ -25,7 +25,7 @@
 
 Here's a real one: a 32-second API freeze, diagnosed and fixed in four slides. **▶ [Step through it live →](https://theolundqvist.github.io/justshowme/examples/event-loop.html)**
 
-https://github.com/user-attachments/assets/384e625f-a1e5-4f9d-b08e-afac5c52ab6e
+https://github.com/user-attachments/assets/3af46ae1-f616-4186-9162-f50b786d8597
 
 | The bug | The cause |
 |---|---|
