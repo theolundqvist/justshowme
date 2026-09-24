@@ -33,7 +33,7 @@ https://github.com/user-attachments/assets/384e625f-a1e5-4f9d-b08e-afac5c52ab6e
 | **The fix** | **The result** |
 | [![a banded Levenshtein matrix computing 250k cells instead of 25M](docs/media/event-loop-3.jpg)](https://theolundqvist.github.io/justshowme/examples/event-loop.html) | [![bars showing 56 seconds dropping to 54 milliseconds](docs/media/event-loop-4.jpg)](https://theolundqvist.github.io/justshowme/examples/event-loop.html) |
 
-In a PR, embed the poster that carries the decision and attach `deck.mp4` below it. Upload by dragging the files into the description, or with [`gh-img`](https://github.com/theolundqvist/gh-img) from the terminal. Command: `/pixelviz`.
+In a PR, embed the GIF of the slide that carries the decision, which autoplays inline, and attach `deck.mp4` below it for the full story. Upload by dragging the files into the description, or with [`gh-img`](https://github.com/theolundqvist/gh-img) from the terminal. Command: `/pixelviz`.
 
 ## The visualize primitives
 
