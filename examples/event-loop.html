@@ -2088,7 +2088,7 @@ const W = FILM.W, H = FILM.H, MAX_SECONDS = 3, MIN_TEXT = 32, BOIL_FPS = 12, TAU
 const L = FILM.lib;
 const PAL = Object.freeze(Object.assign({}, L.pal, {
   orangePale: '#F2C8A0', tealPale: '#B9DAD2', redPale: '#EDB9AC',
-  schemHero: '#F2A66A', schemOk: '#7FE0C8',
+  schemHero: '#F2A66A', schemOk: '#7FE0C8', paper: '#F7F5F0',
 }));
 const FONT = (size, weight) => `${weight} ${size}px Inter, system-ui, sans-serif`;
 const C = key => { if (!(key in PAL)) throw new Error(`unknown palette key ${key}`); return PAL[key]; };
@@ -2143,8 +2143,8 @@ function plate(ctx, sc, T) {
     L.ticks(ctx, 64, 132, { length: W - 128, n: 112, len: 6, major: 8, majorLen: 14, side: -1, color: PAL.lavender, alpha: 0.35, width: 1 });
     L.ticks(ctx, 24, 144, { length: 808, angle: Math.PI / 2, n: 50, len: 6, major: 5, majorLen: 14, side: -1, color: PAL.lavender, alpha: 0.35, width: 1 });
   } else {
-    L.paper(ctx, { w: W, h: H });
-    ctx.save(); ctx.globalAlpha = 0.62;
+    L.paper(ctx, { w: W, h: H, color: PAL.paper, mottle: 0.5 });
+    ctx.save(); ctx.globalAlpha = 0.3;
     L.stripes(ctx, { colors: [PAL.stripeCream, C(sc.band || 'stripeYellow')], width: 150, offset: T * 12, bounds: { x: 0, y: 0, w: W, h: H } });
     ctx.restore();
   }
