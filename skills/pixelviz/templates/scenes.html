@@ -19,7 +19,7 @@
  * Drawing engine ported from procedural-film (https://github.com/kuhnhomeuk-cell/procedural-film),
  * foundation/src/lib.js at ec29e23. MIT License, Copyright (c) 2026 Dean Kuhn; full notice in
  * LICENSE-procedural-film next to this skill. Changes: landscape 1920x1080 frame, boil clock read
- * from FILM.frameT (set from the scene's t), no timeline.
+ * from FILM.frameT (set from the scene's t), no timeline, blueprint glow optional.
  */
 window.FILM = { W: 1920, H: 1080, S: 1, frameT: 0 };
 /*
@@ -1297,6 +1297,7 @@ window.FILM = { W: 1920, H: 1080, S: 1, frameT: 0 };
    *   diagonals    5
    *   noise        1
    *   marks        true    corner registration marks
+   *   glow         true    light centre falling to deep edges; false gives a flat plate
    */
   function blueprint(ctx, o = {}) {
     const x = o.x || 0, y = o.y || 0;
@@ -1312,6 +1313,7 @@ window.FILM = { W: 1920, H: 1080, S: 1, frameT: 0 };
       diagonals: o.diagonals != null ? o.diagonals : 5,
       noise: o.noise != null ? o.noise : 1,
       marks: o.marks !== false,
+      glow: o.glow !== false,
       line: o.line || pal.lavender,
     };
     const key = ['blueprint', w, h, S, JSON.stringify(opt)].join('|');
@@ -1332,7 +1334,7 @@ window.FILM = { W: 1920, H: 1080, S: 1, frameT: 0 };
     const R = Math.hypot(cw, ch) * 0.62;
     for (let py = 0; py < ch; py++) {
       for (let px = 0; px < cw; px++) {
-        const rd = Math.min(1, Math.hypot(px - ccx, py - ccy) / R);
+        const rd = o.glow ? Math.min(1, Math.hypot(px - ccx, py - ccy) / R) : 0.35;
         // light centre falling to deep edges
         const t = rd * rd;
         let r = rd < 0.35 ? lerp(lr, br, rd / 0.35) : lerp(br, dr, (t - 0.1225) / 0.8775);
@@ -2129,7 +2131,7 @@ function postGrain(ctx, mode, T) {
 
 function plate(ctx, sc, T) {
   if (sc.plate === 'blueprint') {
-    L.blueprint(ctx, { w: W, h: H, center: [W / 2, 548], seed: 5 });
+    L.blueprint(ctx, { w: W, h: H, center: [W / 2, 548], seed: 5, glow: false });
     L.ticks(ctx, 64, 132, { length: W - 128, n: 112, len: 6, major: 8, majorLen: 14, side: -1, color: PAL.lavender, alpha: 0.35, width: 1 });
     L.ticks(ctx, 24, 144, { length: 808, angle: Math.PI / 2, n: 50, len: 6, major: 5, majorLen: 14, side: -1, color: PAL.lavender, alpha: 0.35, width: 1 });
   } else {
