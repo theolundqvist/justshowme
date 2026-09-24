@@ -18,13 +18,13 @@ Prose destinations stay markdown — PR description *text*, commit messages, not
 When opening a PR, build a `pixelviz` deck for the change and capture it:
 
 ```
-node ~/.claude/skills/pixelviz/scripts/capture.mjs deck.html shots/
+node ~/.claude/skills/pixelviz/scripts/capture.mjs deck.html shots/ --gif
 ```
 
-It lints and renders every slide and writes `scene-NN.png` posters, `sheet.png` (a contact sheet to check by eye before shipping) and `deck.mp4` (a few MB). Embed the poster that carries the core decision (up to three more for distinct states) and attach `deck.mp4` below it; GitHub plays uploaded MP4s inline. Upload by dragging the files into the PR description, or from the terminal with [`gh-img`](https://github.com/theolundqvist/gh-img):
+It lints and renders every slide and writes `scene-NN.png` posters, `scene-NN.gif` per animated slide (a few MB, grain-free), `sheet.png` (a contact sheet to check by eye before shipping) and `deck.mp4`. Embed the GIF of the slide that carries the core decision, since it autoplays inline (its poster if that slide is a still; up to three more for distinct states), and attach `deck.mp4` below it for the full story. Upload by dragging the files into the PR description, or from the terminal with [`gh-img`](https://github.com/theolundqvist/gh-img):
 
 ```
-gh img --repo <owner/repo> shots/scene-00.png shots/deck.mp4   # prints lines to paste
+gh img --repo <owner/repo> shots/scene-00.gif shots/deck.mp4   # prints lines to paste
 ```
 
 Put the MP4's URL on a line of its own (without the `![]()` wrapper) so GitHub shows a player.

@@ -35,7 +35,7 @@ if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 const count = await page.evaluate(() => window.pixelviz.count());
 const pick = opt.scenes ? String(opt.scenes).split(',').map(Number) : [...Array(count).keys()];
 const png = url => Buffer.from(url.slice(url.indexOf(',') + 1), 'base64');
-const frame = (i, t) => page.evaluate(([i, t]) => window.pixelviz.frame(i, t), [i, t]);
+const frame = (i, t, grain = true) => page.evaluate(([i, t, grain]) => window.pixelviz.frame(i, t, grain), [i, t, grain]);
 const sha = url => createHash('sha256').update(url).digest('hex');
 const issues = new Map(), hashes = [], sheet = [], clips = [];
 let failed = false;
@@ -64,16 +64,24 @@ for (const i of pick) {
   if (duration) {
     const video = ts.flatMap(t => steps.includes(t) || steps.some(s => t < s && t + 1 / frames > s) ? Array(fps).fill(t) : [t]);
     const dir = path.join(out, `.frames-${n}`);
-    await mkdir(dir, { recursive: true });
-    let prev, buf;
-    for (const [f, t] of video.entries()) {
-      if (t !== prev) { buf = png(await frame(i, t)); prev = t; }
-      await writeFile(path.join(dir, `f${String(f).padStart(4, '0')}.png`), buf);
-    }
+    const writeFrames = async grain => {
+      await rm(dir, { recursive: true, force: true });
+      await mkdir(dir, { recursive: true });
+      let prev, buf;
+      for (const [f, t] of video.entries()) {
+        if (t !== prev) { buf = png(await frame(i, t, grain)); prev = t; }
+        await writeFile(path.join(dir, `f${String(f).padStart(4, '0')}.png`), buf);
+      }
+    };
     const seq = path.join(dir, 'f%04d.png');
+    await writeFrames(true);
     execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', seq, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '16', path.join(out, `scene-${n}.mp4`)]);
-    if (opt.gif) execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', seq, '-vf',
-      'scale=960:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128[p];[b][p]paletteuse=dither=sierra2_4a', path.join(out, `scene-${n}.gif`)]);
+    if (opt.gif) {
+      // The film grain changes every pixel on every frame, which defeats GIF frame diffing (21 MB vs 5 MB per slide).
+      await writeFrames(false);
+      execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', seq, '-vf',
+        'scale=960:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=3:diff_mode=rectangle', path.join(out, `scene-${n}.gif`)]);
+    }
     await rm(dir, { recursive: true });
   } else execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-loop', '1', '-framerate', String(fps), '-t', '3', '-i', path.join(out, `scene-${n}.png`),
     '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '16', path.join(out, `scene-${n}.mp4`)]);
