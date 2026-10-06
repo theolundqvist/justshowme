@@ -1,0 +1,14 @@
+{
+ "title": "TITLE",
+ "tier": "standard",
+ "voice": "gemini:Puck",
+ "style": "Read this as a narrator: conversational, lightly energetic, plain, about 155 words per minute, like a relaxed, curious teacher showing a friend something; read exactly as written",
+ "beats": [
+  { "id": "hook", "say": "Here are two things that look the same. They aren't. Let's ask the system.", "lead": 0.8, "hold": 1.2 },
+  { "id": "proof", "say": "Select one equals the other. One. True. Same thing, as far as it's concerned.", "hold": 1.5, "sfx": [{ "at": "One.", "prompt": "soft single wooden ui tick, subtle", "dur": 0.5, "gain": -10 }] },
+  { "id": "question", "say": "So what happens when they disagree? Turns out, a bunch of weird stuff.", "hold": 1.2 },
+  { "id": "fix", "say": "The fix keys on the real identity, not the name.", "hold": 1.5 },
+  { "id": "close", "say": "So, back to our two things. Two in the source. Two here.", "hold": 3.0, "sfx": [{ "at": "here.", "prompt": "soft warm two-note chime, gentle, resolved", "dur": 1.0, "gain": -10 }] }
+ ],
+ "music": "light lo-fi beat, warm keys, unobtrusive, steady"
+}

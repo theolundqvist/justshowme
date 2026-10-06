@@ -1,6 +1,6 @@
 # Snippet for your agent instructions
 
-Paste this into your agent's standing-instructions file — `~/.claude/CLAUDE.md` for Claude Code, `AGENTS.md`, a Cursor rule, whatever your harness reads. It tells the agent which of the two skills to reach for and how to put the result in a PR. Trim to taste.
+Paste this into your agent's standing-instructions file — `~/.claude/CLAUDE.md` for Claude Code, `AGENTS.md`, a Cursor rule, whatever your harness reads. It tells the agent which skill to reach for and how to put the result in a PR. Trim to taste.
 
 ---
 
@@ -10,6 +10,7 @@ For plans, design decisions, option comparisons, architecture walkthroughs, bug 
 
 - **Interactive plans and explainers → `visualize`.** A self-contained HTML deck or page you open in the browser: schematic diagrams, animated flows, sliders and toggles the user can poke, sketches, themed Mermaid. Use a scrolling page only for dense reference.
 - **PR slide stories and bug root-causes → `pixelviz`.** A short deck of 1920x1080 hand-inked slides (paper for the story, blueprint for the mechanism) that animate in steps of at most 3 s and end on a settled poster that tells the whole story alone.
+- **Narrated explainer videos → `videoviz`**, when the user asks for a video or a walkthrough of a whole change. A 2–5 minute 1920x1080 video with a verbatim-checked narrator, real queries and results on screen, and every highlight landing on the word that names it; delivered as a live page, rendered to MP4 only to share.
 
 Prose destinations stay markdown — PR description *text*, commit messages, notes, code comments.
 
@@ -34,4 +35,5 @@ Keep decks and captures out of the commit. The PR description prose stays plain 
 **Tools this relies on (installed once):**
 - **pixelviz capture** — `~/.claude/skills/pixelviz/scripts/capture.mjs`; needs `npm i` in that skill folder and `ffmpeg`
 - **visualize screenshots** — `~/.claude/skills/visualize/scripts/shoot-slides.mjs` (for interactive decks: `--slides=1,3`)
+- **videoviz** — `~/.claude/skills/videoviz/scripts/`; needs `npm ci`, a `.venv` with `numpy faster-whisper` in that skill folder, `ffmpeg`, and a `gcloud` login on a project with Vertex AI
 - **gh-img** (optional) — https://github.com/theolundqvist/gh-img (`gh extension install theolundqvist/gh-img`)
