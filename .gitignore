@@ -3,3 +3,6 @@ out/
 *.log
 .DS_Store
 /tmp/
+.venv/
+.videoviz/
+__pycache__/
